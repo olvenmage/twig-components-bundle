@@ -1,7 +1,6 @@
 <?php
 
-namespace App\Olveneer\TwigComponentsBundle;
-
+namespace Olveneer\TwigComponentsBundle;
 
 use App\Olveneer\TwigComponentsBundle\Resources\src\TwigComponentPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;

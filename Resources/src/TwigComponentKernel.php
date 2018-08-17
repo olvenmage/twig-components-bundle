@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Olveneer\TwigComponentsBundle\Resources\src;
+namespace Olveneer\TwigComponentsBundle\Resources\src;
 
 use Symfony\Component\HttpFoundation\Response;
 

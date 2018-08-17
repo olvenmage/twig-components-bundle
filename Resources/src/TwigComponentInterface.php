@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Olveneer\TwigComponentsBundle\Resources\src;
+namespace Olveneer\TwigComponentsBundle\Resources\src;
 
 /**
  * Interface TwigComponentInterface
