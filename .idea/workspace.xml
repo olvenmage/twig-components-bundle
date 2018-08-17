@@ -23,11 +23,14 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="OlveneerTwigComponentsBundle.php" pinned="false" current-in-tab="false">
+      <file leaf-file-name="OlveneerTwigComponentsBundle.php" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/OlveneerTwigComponentsBundle.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="62">
-              <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+            <state relative-caret-position="124">
+              <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+              <folding>
+                <element signature="e#54#124#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -45,7 +48,7 @@
         <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentPass.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="124">
-              <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+              <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
               <folding>
                 <element signature="e#67#140#0#PHP" expanded="true" />
               </folding>
@@ -57,7 +60,7 @@
         <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentLoader.php">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="124">
-              <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+              <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
               <folding>
                 <element signature="e#67#111#0#PHP" expanded="true" />
               </folding>
@@ -74,11 +77,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="TwigComponentKernel.php" pinned="false" current-in-tab="true">
+      <file leaf-file-name="TwigComponentKernel.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentKernel.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="62">
-              <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+            <state relative-caret-position="1054">
+              <caret line="34" column="7" lean-forward="true" selection-start-line="34" selection-start-column="7" selection-end-line="34" selection-end-column="7" />
             </state>
           </provider>
         </entry>
@@ -91,12 +94,12 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/OlveneerTwigComponentsBundle.php" />
         <option value="$PROJECT_DIR$/Resources/src/TwigComponentStore.php" />
         <option value="$PROJECT_DIR$/Resources/src/TwigComponentPass.php" />
         <option value="$PROJECT_DIR$/Resources/src/TwigComponentLoader.php" />
         <option value="$PROJECT_DIR$/Resources/src/TwigComponentKernel.php" />
         <option value="$PROJECT_DIR$/Resources/src/TwigComponentInterface.php" />
+        <option value="$PROJECT_DIR$/OlveneerTwigComponentsBundle.php" />
       </list>
     </option>
   </component>
@@ -176,12 +179,12 @@
       <option name="presentableId" value="Default" />
       <updated>1534520689023</updated>
       <workItem from="1534520691042" duration="504000" />
-      <workItem from="1534522879904" duration="350000" />
+      <workItem from="1534522879904" duration="607000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="399000" />
+    <option name="totallyTimeSpent" value="656000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-5" y="0" width="3850" height="2171" extended-state="6" />
@@ -246,27 +249,10 @@
     <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentPass.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="124">
-          <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
           <folding>
             <element signature="e#67#140#0#PHP" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentLoader.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="124">
-          <caret line="4" column="4" lean-forward="true" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
-          <folding>
-            <element signature="e#67#111#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentInterface.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
         </state>
       </provider>
     </entry>
@@ -277,7 +263,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/OlveneerTwigComponentsBundle.php">
+    <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentInterface.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="62">
           <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
@@ -286,8 +272,28 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentKernel.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="62">
-          <caret line="2" column="10" selection-start-line="2" selection-start-column="10" selection-end-line="2" selection-end-column="10" />
+        <state relative-caret-position="1054">
+          <caret line="34" column="7" lean-forward="true" selection-start-line="34" selection-start-column="7" selection-end-line="34" selection-end-column="7" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Resources/src/TwigComponentLoader.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+          <folding>
+            <element signature="e#67#111#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/OlveneerTwigComponentsBundle.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="124">
+          <caret line="4" column="4" selection-start-line="4" selection-start-column="4" selection-end-line="4" selection-end-column="4" />
+          <folding>
+            <element signature="e#54#124#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
