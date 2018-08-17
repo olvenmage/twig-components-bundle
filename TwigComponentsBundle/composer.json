@@ -1,0 +1,27 @@
+{
+  "name": "olveneer/twig-components-bundle",
+  "type": "symfony-bundle",
+  "description": "A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.",
+  "keywords": ["olveneer", "twig", "components", "component", "reusable", "templating"],
+  "homepage": "https://github.com/olvenmage/twig-components-bundle",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Douwe Gnodde"
+    }
+  ],
+  "require": {
+    "php":                      ">=5.3.3",
+    "symfony/framework-bundle": "~2.7|~3.0|~4.0",
+    "twig/twig":                "~1.12|~2"
+  },
+  "require-dev": {
+    "symfony/expression-language": "~2.7|~3.0|~4.0",
+    "phpunit/phpunit": "~4.8.35|~5.4.3|~6.4"
+  },
+  "autoload": {
+    "psr-4": {
+      "Olveneer\\TwigComponentsBundle\\": ""
+    }
+  }
+}
