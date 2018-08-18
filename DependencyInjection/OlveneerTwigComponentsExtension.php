@@ -8,6 +8,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\Loader;
 
+/**
+ * Class OlveneerTwigComponentsExtension
+ * @package Olveneer\TwigComponentsBundle\DependencyInjection
+ */
 class OlveneerTwigComponentsExtension extends Extension
 {
 
@@ -27,7 +31,7 @@ class OlveneerTwigComponentsExtension extends Extension
 
         $config = $this->processConfiguration($configuration, $configs);
 
-        $definition = $container->getDefinition('Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel');
+        $definition = $container->getDefinition('olveneer.component_kernel');
         $definition->replaceArgument(2, $config['components_directory']);
     }
 }

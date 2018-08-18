@@ -9,5 +9,9 @@ services:
     olveneer.component_store:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentStore
 
-    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel:
+    olveneer.component_kernel:
+        class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel
         arguments: ['@olveneer.component_store', '@twig', '']
+
+    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel: '@olveneer.component_kernel'
+    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentStore: '@olveneer.component_store'

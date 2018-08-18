@@ -12,8 +12,7 @@ class TwigComponentStore
      * @var TwigComponentInterface[]
      */
     private $components = [];
-
-
+    
     /**
      * Adds a component to the store
      *

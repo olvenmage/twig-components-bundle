@@ -12,7 +12,7 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TwigComponentPass implements CompilerPassInterface
 {
-
+    
     /**
      * Registers all services with the 'olveneer.component' tag as valid components.
      *
@@ -25,12 +25,12 @@ class TwigComponentPass implements CompilerPassInterface
         }
 
         $definition = $container->findDefinition(TwigComponentStore::class);
-
+        
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {
             $definition->addMethodCall('addComponent', [new Reference($id)]);
         }
     }
-
+    
 }

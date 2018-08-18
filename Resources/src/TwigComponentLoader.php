@@ -11,6 +11,7 @@ use Twig\TwigFunction;
  */
 class TwigComponentLoader extends Ext
 {
+    
     /**
      * @var TwigComponentKernel
      */
@@ -24,7 +25,6 @@ class TwigComponentLoader extends Ext
     {
      $this->kernel = $twigComponentKernel;
     }
-
 
     /**
      * @return array|\Twig_Function[]

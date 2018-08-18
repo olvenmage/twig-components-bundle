@@ -52,7 +52,7 @@ class TwigComponentKernel
     public function renderComponent($alias, $props = [])
     {
         $component = $this->store->getComponent($alias);
-
+        
         if (!$component instanceof TwigComponentInterface) {
             return '';
         }
