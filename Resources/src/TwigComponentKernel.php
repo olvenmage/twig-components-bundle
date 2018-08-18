@@ -90,7 +90,7 @@ class TwigComponentKernel
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function render($alias, $props = []): Response
+    public function renderView($alias, $props = [])
     {
         $response = new Response();
 

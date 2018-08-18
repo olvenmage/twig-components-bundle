@@ -16,12 +16,12 @@ interface TwigComponentInterface
      * @param array $props
      * @return array
      */
-    public function getParameters(array $props): array;
+    public function getParameters(array $props);
 
     /**
      * Returns the alias of the component for later referencing.
      *
      * @return String
      */
-    public function getAlias(): String;
+    public function getAlias();
 }

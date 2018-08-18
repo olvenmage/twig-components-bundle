@@ -33,7 +33,7 @@ class TwigComponentStore
      * @param $alias
      * @return TwigComponentInterface|null
      */
-    public function getComponent($alias): ?TwigComponentInterface
+    public function getComponent($alias)
     {
         if (!isset($this->components[$alias])) {
             return null;
