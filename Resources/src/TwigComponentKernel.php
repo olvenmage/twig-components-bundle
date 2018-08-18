@@ -22,14 +22,21 @@ class TwigComponentKernel
     private $twig;
 
     /**
+     * @var string
+     */
+    private $componentDirectory;
+
+    /**
      * TwigComponentKernel constructor.
      * @param TwigComponentStore $componentStore
      * @param \Twig_Environment $twig
+     * @param $componentDirectory
      */
-    public function __construct(TwigComponentStore $componentStore, \Twig_Environment $twig)
+    public function __construct(TwigComponentStore $componentStore, \Twig_Environment $twig, $componentDirectory)
     {
         $this->store = $componentStore;
         $this->twig = $twig;
+        $this->componentDirectory = $componentDirectory;
     }
 
     /**
@@ -70,7 +77,7 @@ class TwigComponentKernel
      */
     public function getComponentPath($alias)
     {
-        return  '/components/' . $alias . '.html.twig';
+        return $this->componentDirectory . '/' . $alias . '.html.twig';
     }
 
     /**
