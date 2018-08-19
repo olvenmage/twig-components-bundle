@@ -19,9 +19,11 @@ interface TwigComponentInterface
     public function getParameters(array $props);
 
     /**
-     * Returns the alias of the component for later referencing.
+     *  Returns a string to use as a name for the component.
      *
-     * @return String
+     *  If you return nothing, a camelcase version of the class name will be used.
+     *
+     * @return String|void
      */
-    public function getAlias();
+    public function getName();
 }

@@ -8,37 +8,57 @@ namespace Olveneer\TwigComponentsBundle\Resources\src;
  */
 class TwigComponentStore
 {
+
+    use TwigComponentNameAccessorTrait;
+
     /**
      * @var TwigComponentInterface[]
      */
     private $components = [];
-    
+
     /**
      * Adds a component to the store
      *
      * @param TwigComponentInterface|null $component
      */
-    public function addComponent($component)
+    public function register($component)
     {
         if (!$component instanceof TwigComponentInterface) {
             return;
         }
 
-        $this->components[$component->getAlias()] = $component;
+        $name = $this->getComponentName($component);
+
+        $this->components[$name] = $component;
     }
 
     /**
-     * Retrieves a component out of the store using it's alias
+     * Retrieves a component out of the store using it's name
      *
-     * @param $alias
+     * @param $name
      * @return TwigComponentInterface|null
      */
-    public function getComponent($alias)
+    public function get($name)
     {
-        if (!isset($this->components[$alias])) {
+        if (class_exists($name)) {
+            return new $name();
+        }
+
+        if (!$this->has($name)) {
             return null;
         }
 
-        return $this->components[$alias];
+        return $this->components[$name];
+    }
+
+    /**
+     * Checks if the name is registered as a component
+     *
+     * @param $name
+     * @return bool
+     */
+    public function has($name)
+    {
+        return isset($this->components[$name]);
     }
 }

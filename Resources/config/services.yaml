@@ -1,17 +1,17 @@
 services:
     olveneer.component_loader:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentLoader
-        public: false
-        arguments: ['@Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel']
-        tags:
-            - { name: twig.extension }
+        arguments: ['@olveneer.component_kernel', '', '']
+        tags: ['twig.extension']
 
     olveneer.component_store:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentStore
+        arguments: ['@olveneer.component_kernel']
 
     olveneer.component_kernel:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel
         arguments: ['@olveneer.component_store', '@twig', '']
 
-    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel: '@olveneer.component_kernel'
+    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentLoader: '@olveneer.component_loader'
     Olveneer\TwigComponentsBundle\Resources\src\TwigComponentStore: '@olveneer.component_store'
+    Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel: '@olveneer.component_kernel'

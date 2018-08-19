@@ -10,6 +10,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TwigComponentKernel
 {
+    
+    use TwigComponentNameAccessorTrait;
 
     /**
      * @var TwigComponentStore
@@ -42,16 +44,16 @@ class TwigComponentKernel
     /**
      * Returns the rendered html of the component.
      *
-     * @param $alias
+     * @param $name
      * @param array $props
      * @return String
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function renderComponent($alias, $props = [])
+    public function renderComponent($name, $props = [])
     {
-        $component = $this->store->getComponent($alias);
+        $component = $this->store->get($name);
         
         if (!$component instanceof TwigComponentInterface) {
             return '';
@@ -59,11 +61,11 @@ class TwigComponentKernel
 
         $parameters = $component->getParameters($props);
 
-        $alias = $component->getAlias();
-        $componentPath = $this->getComponentPath($alias);
+        $name = $this->getComponentName($component);
+        $componentPath = $this->getComponentPath($name);
 
         if (!$this->twig->getLoader()->exists($componentPath)) {
-            $errorMsg = "There is no component template found for '$alias'.\n Looked for the '$componentPath' template";
+            $errorMsg = "There is no component template found for '$name'.\n Looked for the '$componentPath' template";
             throw new \Twig_Error_Loader($errorMsg);
         }
         return $this->twig->render($componentPath, $parameters);
@@ -72,29 +74,29 @@ class TwigComponentKernel
     /**
      * Returns the path where the component twig template should be located.
      *
-     * @param $alias
+     * @param $name
      * @return string
      */
-    public function getComponentPath($alias)
+    public function getComponentPath($name)
     {
-        return $this->componentDirectory . '/' . $alias . '.html.twig';
+        return $this->componentDirectory . '/' . $name . '.html.twig';
     }
 
     /**
      * Returns a response holding the html of a component.
      *
-     * @param $alias
+     * @param $name
      * @param array $props
      * @return Response
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function renderView($alias, $props = [])
+    public function renderView($name, $props = [])
     {
         $response = new Response();
 
-        $html = $this->renderComponent($alias, $props);
+        $html = $this->renderComponent($name, $props);
 
         $response->setContent($html);
 
@@ -104,13 +106,13 @@ class TwigComponentKernel
     /**
      * Returns the parameters of a component.
      *
-     * @param $alias
+     * @param $name
      * @param array $props
      * @return array
      */
-    public function getComponentParameters($alias, $props = [])
+    public function getComponentParameters($name, $props = [])
     {
-       $component = $this->store->getComponent($alias);
+       $component = $this->store->get($name);
 
        if (!$component instanceof TwigComponentInterface) {
            return [];

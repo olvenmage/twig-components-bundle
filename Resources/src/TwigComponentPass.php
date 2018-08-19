@@ -29,8 +29,7 @@ class TwigComponentPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('addComponent', [new Reference($id)]);
+            $definition->addMethodCall('register', [new Reference($id)]);
         }
     }
-    
 }
