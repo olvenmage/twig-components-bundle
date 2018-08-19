@@ -1,10 +1,10 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\src;
+namespace Olveneer\TwigComponentsBundle\Resources\Service;
 
 /**
  * Interface NamedTwigComponentInterface
- * @package App\Olveneer\TwigComponentsBundle\Resources\src
+ * @package App\Olveneer\TwigComponentsBundle\Resources\Service
  */
 interface NamedTwigComponentInterface extends TwigComponentInterface
 {

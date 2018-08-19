@@ -35,7 +35,7 @@ class OlveneerTwigComponentsExtension extends Extension
         $kernelDefinition = $container->getDefinition('olveneer.component_kernel');
         $kernelDefinition->replaceArgument(2, $config['components_directory']);
 
-        $loaderDefinition = $container->getDefinition('olveneer.component_loader');
+        $loaderDefinition = $container->getDefinition('olveneer.component_extension');
         $loaderDefinition->replaceArgument(1, $templatingOptions['render_function']);
         $loaderDefinition->replaceArgument(2, $templatingOptions['access_function']);
     }
