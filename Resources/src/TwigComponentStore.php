@@ -8,7 +8,6 @@ namespace Olveneer\TwigComponentsBundle\Resources\src;
  */
 class TwigComponentStore
 {
-
     use TwigComponentNameAccessorTrait;
 
     /**

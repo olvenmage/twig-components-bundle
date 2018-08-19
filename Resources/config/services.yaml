@@ -6,7 +6,7 @@ services:
 
     olveneer.component_store:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentStore
-        arguments: ['@olveneer.component_kernel']
+        arguments: []
 
     olveneer.component_kernel:
         class: Olveneer\TwigComponentsBundle\Resources\src\TwigComponentKernel
