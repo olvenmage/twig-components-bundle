@@ -22,7 +22,7 @@ class TwigComponentStore
      */
     public function register($component)
     {
-        if (!$component instanceof TwigComponentInterface) {
+        if (!$component instanceof TwigComponentInterface && $component instanceof NamedTwigComponentInterface) {
             return;
         }
 
