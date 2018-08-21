@@ -1,11 +1,13 @@
 # twig-components-bundle
 A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.
 
-# Usage
+# Installation
      composer require olveneer/twig-components-bundle
+     
+# Usage
 **The class**
 
-Create a service implementing either NamedTwigComponentInterface or TwigComponentInterface, 
+Each component requires a special service implementing either NamedTwigComponentInterface or TwigComponentInterface, 
 we'll get to the difference of those in a minute.
 
      /**
