@@ -25,11 +25,9 @@ we'll get to the difference of those in a minute.
      }
 
 When using `TwigComponentInterface`, this is the only method you'll need, 
-a function returning the parameters for your twig component. What are these `$props`, you ask? Well, component's main advantage
-is that they can be reused multiple times. However, rarely do you ever need the 100% exact same component, so props
-function as options to make your parameters more dynamic. Confused? Don't worry, it will all get more clear later.
+a function returning the parameters for your twig component. What are these `$props`, you ask? Well, component's main advantage is that they can be reused multiple times. However, rarely do you ever need the 100% exact same component, so props function as options to make your parameters more dynamic. Confused? Don't worry, it will all get more clear later.
 
-When using NamedTwigComponentInterface you will also have the getName() method included:
+When using `NamedTwigComponentInterface` you will also have the getName() method included:
 
     /**
      * Returns the string to use as a name for the component.
@@ -41,7 +39,7 @@ When using NamedTwigComponentInterface you will also have the getName() method i
         return 'testComponent';
     }
 
-What is the name for  a component? When rendering the component, or wanting to receive data from one, it's name is used
+What is the name of a component? When rendering the component, or wanting to receive data from one, it's name is used
 to reference it. When using `TwigComponentInterface` instead of `NamedTwigComponent`, the component still gets a name, except that it's automatically generated.
 
 Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how we determine the name is:
@@ -133,25 +131,26 @@ Now we finally get to the config, I will show you an example configuration file.
             access_function: 'access'
 
 You might notice that besides the already known render funciton, there is also an access function stated, this 
-function can be used to retrieve parameters from components inside the template, two quick examples:
+function can be used to retrieve parameters from components inside the template, two quick access examples:
 
-        {{ component('secondComponent', {test: 2}) }}
+        {{ component('secondComponent', {test: 2}) }} // renders secondComponent with props: {test: 2}
         
-        {% set params = access('secondComponent', ['asd', 'kernel'], { test: 2 })  %}
+        {% set params = access('secondComponent', ['asd', 'kernel'], { test: 2 })  %} {# writes the asd and kernel parameter to the 'params' variable. #}
         
-        {{ params['asd'] }}
-        {{ params['kernel'] }}
+        {{ params['asd'] }} {# prints the value for the asd paramter #}
+        {{ params['kernel'] }} {# prints the value for the kernel paramter #}
         
         {{ access('secondComponent', 'asd') }} {# prints the value for the asd paramter #}
         
 From this example you can see the component function being used, as well as the access function:
 
-`access($componentName, $parameters, $props)`
+`access($componentName, $parameters, $props = [])`
 
 as you might have noticed, the access function is dynamic, if you pass $parameters as a string, you will get just one
 parameter, if you pass an array, you get all of the keys present in the array.
             
-
+# Upcoming
+* Slot support. You can pass props when attempting to render the template, but with slots, you can also pass markup along side it and slot it in dedicated spots in your component.
 
 
 
