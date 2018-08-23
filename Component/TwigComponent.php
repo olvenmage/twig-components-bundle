@@ -1,32 +1,16 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Component;
-use Olveneer\TwigComponentsBundle\Resources\Service\TwigComponentKernel;
-use Olveneer\TwigComponentsBundle\Resources\Service\TwigComponentNameAccessorTrait;
+namespace Olveneer\TwigComponentsBundle\Component;
+
 use Symfony\Component\HttpFoundation\Response;
 
 
 /**
  * Class TwigComponent
- * @package Olveneer\TwigComponentsBundle\Resources\Component
+ * @package Olveneer\TwigComponentsBundle\Component
  */
 class TwigComponent implements ComplexTwigComponentInterface
 {
-    use TwigComponentNameAccessorTrait;
-
-    /**
-     * @var TwigComponentKernel
-     */
-    private $kernel;
-
-    /**
-     * TwigComponent constructor.
-     * @param TwigComponentKernel $twigComponentKernel
-     */
-    public function __construct(TwigComponentKernel $twigComponentKernel)
-    {
-        $this->kernel = $twigComponentKernel;
-    }
 
     /**
      * Returns the parameters to be used when rendering the template.
@@ -35,7 +19,7 @@ class TwigComponent implements ComplexTwigComponentInterface
      * @param array $props
      * @return array
      */
-    public function getParameters(array $props= [])
+    public function getParameters(array $props = [])
     {
         return $props;
     }
@@ -63,11 +47,12 @@ class TwigComponent implements ComplexTwigComponentInterface
     /**
      * Returns the entire path of the component template location.
      *
+     * @param string $componentDirectory
      * @return mixed
      */
-    public function getComponentFilePath()
+    public function getComponentFilePath($componentDirectory)
     {
-        return $this->kernel->getComponentDirectory() . '/' .  $this->getComponentFileName();
+        return $componentDirectory . '/' .  $this->getComponentFileName();
     }
 
 

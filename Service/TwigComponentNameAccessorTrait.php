@@ -1,12 +1,12 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Resources\Component\NamedTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\NamedTwigComponentInterface;
 
 /**
  * Trait TwigComponentNameAccessorTrait
- * @package Olveneer\TwigComponentsBundle\Resources\Service
+ * @package Olveneer\TwigComponentsBundle\Service
  */
 trait TwigComponentNameAccessorTrait
 {

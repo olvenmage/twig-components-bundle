@@ -1,12 +1,12 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Resources\Component\NamedTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\NamedTwigComponentInterface;
 
 /**
  * Class TwigComponentStore
- * @package App\Olveneer\TwigComponentsBundle\Resources\Service
+ * @package App\Olveneer\TwigComponentsBundle\Service
  */
 class TwigComponentStore
 {

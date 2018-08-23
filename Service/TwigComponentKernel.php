@@ -1,14 +1,14 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Resources\Component\ComplexTwigComponentInterface;
-use Olveneer\TwigComponentsBundle\Resources\Component\TwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\ComplexTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class TwigComponentKernel
- * @package App\Olveneer\TwigComponentsBundle\Resources\Service
+ * @package App\Olveneer\TwigComponentsBundle\Service
  */
 class TwigComponentKernel
 {
@@ -28,7 +28,7 @@ class TwigComponentKernel
     /**
      * @var string
      */
-    private $componentDirectory;
+    public $componentDirectory;
 
     /**
      * TwigComponentKernel constructor.
@@ -41,11 +41,6 @@ class TwigComponentKernel
         $this->store = $componentStore;
         $this->twig = $twig;
         $this->componentDirectory = $componentDirectory;
-    }
-
-    public function getComponentDirectory()
-    {
-        return $this->componentDirectory;
     }
 
     /**
@@ -91,7 +86,7 @@ class TwigComponentKernel
         $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
 
         if ($component instanceof ComplexTwigComponentInterface) {
-            $filePath =  $component->getComponentFilePath();
+            $filePath =  $component->getComponentFilePath($this->componentDirectory);
         }
 
         return $filePath;

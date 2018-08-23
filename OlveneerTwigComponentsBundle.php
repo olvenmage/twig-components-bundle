@@ -2,7 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle;
 
-use Olveneer\TwigComponentsBundle\Resources\Service\TwigComponentPass;
+use Olveneer\TwigComponentsBundle\Service\TwigComponentPass;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 

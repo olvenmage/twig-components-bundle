@@ -1,13 +1,13 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Twig;
+namespace Olveneer\TwigComponentsBundle\Twig;
 
 use Twig\Extension\AbstractExtension as BaseTwigExtension;
 use Twig\TwigFunction;
 
 /**
  * Class TwigComponentExtension
- * @package App\Olveneer\TwigComponentsBundle\Resources\Service
+ * @package App\Olveneer\TwigComponentsBundle\Service
  */
 class TwigComponentExtension extends BaseTwigExtension
 {

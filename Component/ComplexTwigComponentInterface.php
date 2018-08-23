@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Component;
+namespace Olveneer\TwigComponentsBundle\Component;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -17,9 +17,10 @@ interface ComplexTwigComponentInterface extends  NamedTwigComponentInterface
     /**
      * Returns the entire path of the component template location.
      *
+     * @param string $componentDirectory
      * @return mixed
      */
-    public function getComponentFilePath();
+    public function getComponentFilePath($componentDirectory);
 
     /**
      * Returns the base response to use when rendering the component via the renderView() method.

@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Service;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -8,7 +8,7 @@ use Symfony\Component\DependencyInjection\Reference;
 
 /**
  * Class TwigComponentPass
- * @package App\Olveneer\TwigComponentsBundle\Resources\Service
+ * @package App\Olveneer\TwigComponentsBundle\Service
  */
 class TwigComponentPass implements CompilerPassInterface
 {
