@@ -12,7 +12,15 @@ use Symfony\Component\HttpFoundation\Response;
 class TwigComponent implements ComplexTwigComponentInterface
 {
 
+    /**
+     * @var string
+     */
     private $componentsRoot;
+
+    /**
+     * @var array
+     */
+    private $props;
 
     /**
      * Returns the parameters to be used when rendering the template.
@@ -92,5 +100,25 @@ class TwigComponent implements ComplexTwigComponentInterface
     public function setComponentsRoot($componentsRoot)
     {
         $this->componentsRoot = $componentsRoot;
+    }
+
+    /**
+     * Returns the props passed to the component
+     *
+     * @return array
+     */
+    public function getProps()
+    {
+        return $this->props;
+    }
+
+    /**
+     * Sets the props passed to the component
+     *
+     * @param $props
+     */
+    public function setProps($props)
+    {
+        $this->props = $props;
     }
 }

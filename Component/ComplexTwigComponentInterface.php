@@ -52,4 +52,18 @@ interface ComplexTwigComponentInterface extends  NamedTwigComponentInterface
      */
     public function setComponentsRoot($componentsRoot);
 
+    /**
+     * Returns the props passed to the component
+     *
+     * @return array
+     */
+    public function getProps();
+
+    /**
+     * Sets the props passed to the component
+     *
+     * @param $props
+     */
+    public function setProps($props);
+
 }

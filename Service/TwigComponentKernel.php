@@ -55,7 +55,7 @@ class TwigComponentKernel
      */
     public function renderComponent($name, $props = [])
     {
-        $component = $this->getComponent($name);
+        $component = $this->getComponent($name, $props);
         
         if (!$component instanceof TwigComponentInterface) {
             return '';
@@ -104,7 +104,7 @@ class TwigComponentKernel
      */
     public function renderView($name, $props = [])
     {
-        $component = $this->getComponent($name);
+        $component = $this->getComponent($name, $props);
 
         $response = new Response();
 
@@ -137,12 +137,19 @@ class TwigComponentKernel
        return $component->getParameters($props);
     }
 
-    public function getComponent($name)
+    public function getComponent($name, $props = null)
     {
         $component = $this->store->get($name);
 
-        if ($component instanceof ComplexTwigComponentInterface && $component->getComponentsRoot() === null) {
-            $component->setComponentsRoot($this->componentDirectory);
+        if ($component instanceof ComplexTwigComponentInterface) {
+            if ($component->getComponentsRoot() === null) {
+                $component->setComponentsRoot($this->componentDirectory);
+            }
+
+            if ($props) {
+                $component->setProps($props);
+            }
+
         }
 
         return $component;
