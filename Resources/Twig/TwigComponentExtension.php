@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Resources\Twig;
 
 use Twig\Extension\AbstractExtension as BaseTwigExtension;
 use Twig\TwigFunction;
