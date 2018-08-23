@@ -12,6 +12,8 @@ use Symfony\Component\HttpFoundation\Response;
 class TwigComponent implements ComplexTwigComponentInterface
 {
 
+    private $componentsRoot;
+
     /**
      * Returns the parameters to be used when rendering the template.
      * Props can be provided when rendering the component to make it more dynamic.
@@ -37,7 +39,7 @@ class TwigComponent implements ComplexTwigComponentInterface
     /**
      * Returns the template file name for the component.
      *
-     * @return string;
+     * @return string
      */
     public function getComponentFileName()
     {
@@ -47,14 +49,17 @@ class TwigComponent implements ComplexTwigComponentInterface
     /**
      * Returns the entire path of the component template location.
      *
-     * @param string $componentDirectory
-     * @return mixed
+     * @return string
      */
-    public function getComponentFilePath($componentDirectory)
+    public function getComponentFilePath()
     {
-        return $componentDirectory . '/' .  $this->getComponentFileName();
+       return $this->getComponentFileDirectory() .  $this->getComponentFileName();
     }
 
+    public function getComponentFileDirectory()
+    {
+        return $this->getComponentsRoot();
+    }
 
     /**
      * Returns the base response to use when rendering the component via the renderView() method.
@@ -64,5 +69,28 @@ class TwigComponent implements ComplexTwigComponentInterface
     public function getRenderResponse()
     {
         return new Response();
+    }
+
+    /**
+     * Returns the directory name that holds the component.
+     *
+     * @return string
+     *
+     */
+    public function getComponentsRoot()
+    {
+        return $this->componentsRoot;
+    }
+
+    /**
+     * Sets the directory name that holds the component.
+     *
+     * @param string $componentsRoot
+     *
+     * @return string
+     */
+    public function setComponentsRoot($componentsRoot)
+    {
+        $this->componentsRoot = $componentsRoot;
     }
 }

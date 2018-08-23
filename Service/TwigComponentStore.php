@@ -2,7 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Component\NamedTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 
 /**
  * Class TwigComponentStore
@@ -24,7 +24,7 @@ class TwigComponentStore
      */
     public function register($component)
     {
-        if (!$component instanceof TwigComponentInterface && $component instanceof NamedTwigComponentInterface) {
+        if (!$component instanceof TwigComponentInterface) {
             return;
         }
 

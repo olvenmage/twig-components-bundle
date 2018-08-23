@@ -55,7 +55,7 @@ class TwigComponentKernel
      */
     public function renderComponent($name, $props = [])
     {
-        $component = $this->store->get($name);
+        $component = $this->getComponent($name);
         
         if (!$component instanceof TwigComponentInterface) {
             return '';
@@ -81,7 +81,7 @@ class TwigComponentKernel
      */
     public function getComponentPath($name)
     {
-        $component = $this->store->get($name);
+        $component = $this->getComponent($name);
 
         $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
 
@@ -104,7 +104,7 @@ class TwigComponentKernel
      */
     public function renderView($name, $props = [])
     {
-        $component = $this->store->get($name);
+        $component = $this->getComponent($name);
 
         $response = new Response();
 
@@ -128,12 +128,23 @@ class TwigComponentKernel
      */
     public function getComponentParameters($name, $props = [])
     {
-       $component = $this->store->get($name);
+       $component = $this->getComponent($name);
 
        if (!$component instanceof TwigComponentInterface) {
            return [];
        }
 
        return $component->getParameters($props);
+    }
+
+    public function getComponent($name)
+    {
+        $component = $this->store->get($name);
+
+        if ($component instanceof ComplexTwigComponentInterface) {
+            $component->setComponentsRoot($this->componentDirectory);
+        }
+
+        return $component;
     }
 }
