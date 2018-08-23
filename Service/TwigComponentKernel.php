@@ -76,8 +76,15 @@ class TwigComponentKernel
         $name = $this->getComponentName($component);
         $componentPath = $this->getComponentPath($name);
 
+
+        if (substr($componentPath, 0, 1) === '/') {
+            $prefix = 'templates';
+        } else {
+            $prefix = 'templates/';
+        }
+
         if (!$this->twig->getLoader()->exists($componentPath)) {
-            $errorMsg = "There is no component template found for '$name'.\n Looked for the 'templates/$componentPath' template";
+            $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
             throw new \Twig_Error_Loader($errorMsg);
         }
         
