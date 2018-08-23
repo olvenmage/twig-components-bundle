@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Resources\Service;
 
+use Olveneer\TwigComponentsBundle\Resources\Component\ComplexTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Resources\Component\TwigComponentInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -39,6 +41,11 @@ class TwigComponentKernel
         $this->store = $componentStore;
         $this->twig = $twig;
         $this->componentDirectory = $componentDirectory;
+    }
+
+    public function getComponentDirectory()
+    {
+        return $this->componentDirectory;
     }
 
     /**
@@ -79,7 +86,15 @@ class TwigComponentKernel
      */
     public function getComponentPath($name)
     {
-        return $this->componentDirectory . '/' . $name . '.html.twig';
+        $component = $this->store->get($name);
+
+        $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
+
+        if ($component instanceof ComplexTwigComponentInterface) {
+            $filePath =  $component->getComponentFilePath();
+        }
+
+        return $filePath;
     }
 
     /**
@@ -94,7 +109,13 @@ class TwigComponentKernel
      */
     public function renderView($name, $props = [])
     {
+        $component = $this->store->get($name);
+
         $response = new Response();
+
+        if ($component instanceof ComplexTwigComponentInterface) {
+            $response = $component->getRenderResponse();
+        }
 
         $html = $this->renderComponent($name, $props);
 

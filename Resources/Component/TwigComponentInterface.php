@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Resources\Service;
+namespace Olveneer\TwigComponentsBundle\Resources\Component;
 
 /**
  * Interface TwigComponentInterface
@@ -15,5 +15,5 @@ interface TwigComponentInterface
      * @param array $props
      * @return array
      */
-    public function getParameters(array $props);
+    public function getParameters(array $props = []);
 }

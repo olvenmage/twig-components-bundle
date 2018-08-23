@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Resources\Service;
 
+use Olveneer\TwigComponentsBundle\Resources\Component\NamedTwigComponentInterface;
+
 /**
  * Trait TwigComponentNameAccessorTrait
  * @package Olveneer\TwigComponentsBundle\Resources\Service
