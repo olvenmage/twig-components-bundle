@@ -4,9 +4,13 @@ namespace Olveneer\TwigComponentsBundle\Component;
 
 use Symfony\Component\HttpFoundation\Response;
 
-interface ComplexTwigComponentInterface extends  NamedTwigComponentInterface
+/**
+ * Interface AbstractTwigComponentInterface
+ * @package Olveneer\TwigComponentsBundle\Component\
+ */
+interface AbstractTwigComponentInterface extends  NamedTwigComponentInterface
 {
-
+    
     /**
      * Returns the template file name for the component.
      *
@@ -65,5 +69,4 @@ interface ComplexTwigComponentInterface extends  NamedTwigComponentInterface
      * @param $props
      */
     public function setProps($props);
-
 }

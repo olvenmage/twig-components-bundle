@@ -4,6 +4,11 @@ services:
         arguments: ['@olveneer.component_kernel', '', '']
         tags: ['twig.extension']
 
+    olveneer.slot_extension:
+        class: Olveneer\TwigComponentsBundle\Twig\SlotExtension
+        arguments: ['@olveneer.component_kernel']
+        tags: ['twig.extension']
+
     olveneer.component_store:
         class: Olveneer\TwigComponentsBundle\Service\TwigComponentStore
         arguments: []
@@ -15,3 +20,4 @@ services:
     Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension: '@olveneer.component_extension'
     Olveneer\TwigComponentsBundle\Service\TwigComponentStore: '@olveneer.component_store'
     Olveneer\TwigComponentsBundle\Service\TwigComponentKernel: '@olveneer.component_kernel'
+    Olveneer\TwigComponentsBundle\Twig\SlotExtension:         '@olveneer.slot_extension'

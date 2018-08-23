@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
  * Class TwigComponent
  * @package Olveneer\TwigComponentsBundle\Component
  */
-class TwigComponent implements ComplexTwigComponentInterface
+class TwigComponent implements AbstractTwigComponentInterface
 {
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Component\ComplexTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\AbstractTwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -29,6 +29,16 @@ class TwigComponentKernel
      * @var string
      */
     public $componentDirectory;
+
+    /**
+     * @var array 
+     */
+    private $slotStore = [];
+
+    /**
+     * @var 
+     */
+    private $currentComponent;
 
     /**
      * TwigComponentKernel constructor.
@@ -70,6 +80,8 @@ class TwigComponentKernel
             $errorMsg = "There is no component template found for '$name'.\n Looked for the 'templates/$componentPath' template";
             throw new \Twig_Error_Loader($errorMsg);
         }
+        
+        $this->currentTemplate = $componentPath;
         return $this->twig->render($componentPath, $parameters);
     }
 
@@ -85,9 +97,11 @@ class TwigComponentKernel
 
         $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
 
-        if ($component instanceof ComplexTwigComponentInterface) {
-            $filePath =  $component->getComponentFilePath();
+        if ($component instanceof AbstractTwigComponentInterface) {
+            $filePath =  $component->getTemplatePath();
         }
+
+        $this->lastTemplate = $filePath;
 
         return $filePath;
     }
@@ -108,7 +122,7 @@ class TwigComponentKernel
 
         $response = new Response();
 
-        if ($component instanceof ComplexTwigComponentInterface) {
+        if ($component instanceof AbstractTwigComponentInterface) {
             $response = $component->getRenderResponse();
         }
 
@@ -137,11 +151,16 @@ class TwigComponentKernel
        return $component->getParameters($props);
     }
 
+    /**
+     * @param $name
+     * @param null $props
+     * @return null|TwigComponentInterface
+     */
     public function getComponent($name, $props = null)
     {
         $component = $this->store->get($name);
 
-        if ($component instanceof ComplexTwigComponentInterface) {
+        if ($component instanceof AbstractTwigComponentInterface) {
             if ($component->getComponentsRoot() === null) {
                 $component->setComponentsRoot($this->componentDirectory);
             }
@@ -153,5 +172,28 @@ class TwigComponentKernel
         }
 
         return $component;
+    }
+
+    /**
+     * [WIP]
+     * 
+     * @param $html
+     * @param $template
+     * @param $name
+     */
+    public function registerSlot($html, $template, $name)
+    {
+        $this->slotStore[$name] = $html;
+    }
+
+    /**
+     * [WIP]
+     * 
+     * @param $name
+     * @return mixed
+     */
+    public function getSlot($name)
+    {
+        return $this->slotStore[$name];
     }
 }
