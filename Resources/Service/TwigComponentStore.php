@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Resources\Service;
 
+use Olveneer\TwigComponentsBundle\Resources\Component\NamedTwigComponentInterface;
+
 /**
  * Class TwigComponentStore
  * @package App\Olveneer\TwigComponentsBundle\Resources\Service
