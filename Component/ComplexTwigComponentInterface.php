@@ -12,22 +12,21 @@ interface ComplexTwigComponentInterface extends  NamedTwigComponentInterface
      *
      * @return string;
      */
-    public function getComponentFileName();
+    public function getTemplateName();
 
     /**
      * Returns the entire path of the component template location.
      *
-     * @param string $componentDirectory
-     * @return mixed
+     * @return string
      */
-    public function getComponentFilePath();
+    public function getTemplatePath();
 
     /**
      * Returns the directory the template file is located in
      *
-     * @return mixed
+     * @return string
      */
-    public function getComponentFileDirectory();
+    public function getTemplateDirectory();
 
     /**
      * Returns the base response to use when rendering the component via the renderView() method.

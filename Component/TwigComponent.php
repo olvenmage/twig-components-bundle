@@ -41,7 +41,7 @@ class TwigComponent implements ComplexTwigComponentInterface
      *
      * @return string
      */
-    public function getComponentFileName()
+    public function getTemplateName()
     {
         return $this->getName() . ".html.twig";
     }
@@ -51,12 +51,12 @@ class TwigComponent implements ComplexTwigComponentInterface
      *
      * @return string
      */
-    public function getComponentFilePath()
+    public function getTemplatePath()
     {
-       return $this->getComponentFileDirectory() . '/' . $this->getComponentFileName();
+       return $this->getTemplateDirectory() . '/' . $this->getTemplateName();
     }
 
-    public function getComponentFileDirectory()
+    public function getTemplateDirectory()
     {
         return $this->getComponentsRoot();
     }

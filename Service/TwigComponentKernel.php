@@ -67,7 +67,7 @@ class TwigComponentKernel
         $componentPath = $this->getComponentPath($name);
 
         if (!$this->twig->getLoader()->exists($componentPath)) {
-            $errorMsg = "There is no component template found for '$name'.\n Looked for the '$componentPath' template";
+            $errorMsg = "There is no component template found for '$name'.\n Looked for the 'templates/$componentPath' template";
             throw new \Twig_Error_Loader($errorMsg);
         }
         return $this->twig->render($componentPath, $parameters);
@@ -86,7 +86,7 @@ class TwigComponentKernel
         $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
 
         if ($component instanceof ComplexTwigComponentInterface) {
-            $filePath =  $component->getComponentFilePath($this->componentDirectory);
+            $filePath =  $component->getComponentFilePath();
         }
 
         return $filePath;
