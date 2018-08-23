@@ -2,9 +2,12 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
+use App\Component\OptionResolverComponent;
 use Olveneer\TwigComponentsBundle\Component\AbstractTwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Exception\OptionResolverNotPresentException;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TwigComponentKernel
@@ -12,7 +15,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class TwigComponentKernel
 {
-    
+
     use TwigComponentNameAccessorTrait;
 
     /**
@@ -31,15 +34,10 @@ class TwigComponentKernel
     public $componentDirectory;
 
     /**
-     * @var array 
+     * @var array
      */
     private $slotStore = [];
-
-    /**
-     * @var 
-     */
-    private $currentComponent;
-
+    
     /**
      * TwigComponentKernel constructor.
      * @param TwigComponentStore $componentStore
@@ -66,10 +64,12 @@ class TwigComponentKernel
     public function renderComponent($name, $props = [])
     {
         $component = $this->getComponent($name, $props);
-        
+
         if (!$component instanceof TwigComponentInterface) {
             return '';
         }
+
+
 
         $parameters = $component->getParameters($props);
 
@@ -87,7 +87,7 @@ class TwigComponentKernel
             $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
             throw new \Twig_Error_Loader($errorMsg);
         }
-        
+
         $this->currentTemplate = $componentPath;
         return $this->twig->render($componentPath, $parameters);
     }
@@ -102,13 +102,11 @@ class TwigComponentKernel
     {
         $component = $this->getComponent($name);
 
-        $filePath = $this->componentDirectory . '/' . $name. '.html.twig';
+        $filePath = $this->componentDirectory . '/' . $name . '.html.twig';
 
         if ($component instanceof AbstractTwigComponentInterface) {
-            $filePath =  $component->getTemplatePath();
+            $filePath = $component->getTemplatePath();
         }
-
-        $this->lastTemplate = $filePath;
 
         return $filePath;
     }
@@ -149,13 +147,13 @@ class TwigComponentKernel
      */
     public function getComponentParameters($name, $props = [])
     {
-       $component = $this->getComponent($name);
+        $component = $this->getComponent($name);
 
-       if (!$component instanceof TwigComponentInterface) {
-           return [];
-       }
+        if (!$component instanceof TwigComponentInterface) {
+            return [];
+        }
 
-       return $component->getParameters($props);
+        return $component->getParameters($props);
     }
 
     /**
@@ -163,7 +161,7 @@ class TwigComponentKernel
      * @param null $props
      * @return null|TwigComponentInterface
      */
-    public function getComponent($name, $props = null)
+    public function getComponent($name, &$props = null)
     {
         $component = $this->store->get($name);
 
@@ -173,6 +171,14 @@ class TwigComponentKernel
             }
 
             if ($props) {
+                $optionResolver = new OptionsResolver();
+
+                $isUsed = $component->configureProps($optionResolver) !== false;
+
+                if ($isUsed) {
+                    $props = $optionResolver->resolve($props);
+                }
+                
                 $component->setProps($props);
             }
 
@@ -183,7 +189,7 @@ class TwigComponentKernel
 
     /**
      * [WIP]
-     * 
+     *
      * @param $html
      * @param $template
      * @param $name
@@ -195,7 +201,7 @@ class TwigComponentKernel
 
     /**
      * [WIP]
-     * 
+     *
      * @param $name
      * @return mixed
      */

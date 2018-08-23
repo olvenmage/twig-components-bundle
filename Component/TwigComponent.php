@@ -3,7 +3,7 @@
 namespace Olveneer\TwigComponentsBundle\Component;
 
 use Symfony\Component\HttpFoundation\Response;
-
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Class TwigComponent
@@ -120,5 +120,16 @@ class TwigComponent implements AbstractTwigComponentInterface
     public function setProps($props)
     {
         $this->props = $props;
+    }
+
+    /**
+     * Can only be used if the symfony option resolver is present.
+     *
+     * @param OptionsResolver $resolver
+     * @return void|bool
+     */
+    public function configureProps(OptionsResolver $resolver)
+    {
+        return false;
     }
 }

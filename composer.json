@@ -13,7 +13,8 @@
   "require": {
     "php":                      ">=5.5.0",
     "symfony/framework-bundle": "~2.7|~3.0|~4.0",
-    "twig/twig": "^2.5"
+    "twig/twig": "^2.5",
+    "symfony/options-resolver": "^4.1"
   },
   "autoload": {
     "psr-4": {
