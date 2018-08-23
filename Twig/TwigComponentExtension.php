@@ -2,6 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig;
 
+use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
 use Twig\Extension\AbstractExtension as BaseTwigExtension;
 use Twig\TwigFunction;
 
