@@ -141,7 +141,7 @@ class TwigComponentKernel
     {
         $component = $this->store->get($name);
 
-        if ($component instanceof ComplexTwigComponentInterface) {
+        if ($component instanceof ComplexTwigComponentInterface && $component->getComponentsRoot() === null) {
             $component->setComponentsRoot($this->componentDirectory);
         }
 

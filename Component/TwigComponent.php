@@ -53,7 +53,7 @@ class TwigComponent implements ComplexTwigComponentInterface
      */
     public function getComponentFilePath()
     {
-       return $this->getComponentFileDirectory() .  $this->getComponentFileName();
+       return $this->getComponentFileDirectory() . '/' . $this->getComponentFileName();
     }
 
     public function getComponentFileDirectory()
