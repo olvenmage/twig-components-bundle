@@ -9,7 +9,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  * Interface AbstractTwigComponentInterface
  * @package Olveneer\TwigComponentsBundle\Component\
  */
-interface AbstractTwigComponentInterface extends  NamedTwigComponentInterface
+interface AbstractTwigComponentInterface extends NamedTwigComponentInterface
 {
 
     /**
