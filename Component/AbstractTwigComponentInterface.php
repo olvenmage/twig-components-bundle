@@ -42,7 +42,7 @@ interface AbstractTwigComponentInterface extends  NamedTwigComponentInterface
     public function getTemplateDirectory();
 
     /**
-     * Returns the base response to use when rendering the component via the renderView() method.
+     * Returns the base response to use when rendering the component via the render() method.
      *
      * @return Response
      */

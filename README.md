@@ -96,7 +96,7 @@ The name for this function is also configurable, again, we'll get to that.
 
 Method B is, injecting the `TwigComponentKernel` into your service or controller and either call the 
 `renderComponent($componentName, $props = [])` function if you just want to get the html, or the 
-`renderView($componentName, $props = [])` to immediately get the response for the browser.
+`render($componentName, $props = [])` to immediately get the response for the browser.
 
 example:
 
@@ -110,13 +110,13 @@ example:
      */
     public function test(TwigComponentKernel $kernel)
     {
-        return $kernel->renderView(TestComponent::class);
+        return $kernel->render(TestComponent::class);
     }
     
 Note that in the example I used `TestComponent::class` to retrieve the component instead of the component name, this is
 an alternative way to render or retrieve the component. The 'normal' way is via
 
-`$kernel->renderView('testComponent');`
+`$kernel->render('testComponent');`
 
 **The config**
 

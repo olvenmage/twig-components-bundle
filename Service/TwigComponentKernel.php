@@ -37,7 +37,7 @@ class TwigComponentKernel
      * @var array
      */
     private $slotStore = [];
-    
+
     /**
      * TwigComponentKernel constructor.
      * @param TwigComponentStore $componentStore
@@ -121,7 +121,7 @@ class TwigComponentKernel
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function renderView($name, $props = [])
+    public function render($name, $props = [])
     {
         $component = $this->getComponent($name, $props);
 
