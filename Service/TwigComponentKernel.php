@@ -6,6 +6,7 @@ use App\Component\OptionResolverComponent;
 use Olveneer\TwigComponentsBundle\Component\AbstractTwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Exception\OptionResolverNotPresentException;
+use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 

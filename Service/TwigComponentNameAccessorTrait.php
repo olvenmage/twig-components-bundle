@@ -21,11 +21,10 @@ trait TwigComponentNameAccessorTrait
         if ($component instanceof NamedTwigComponentInterface) {
             $name = $component->getName();
         } else {
+            $className = get_class($component);
+            $forwardSlashed = str_replace('\\', '/', $className);
 
-            // get only the last part of the class path.
-            $className = basename(get_class($component));
-
-            $name = lcfirst($className);
+            $name = lcfirst(basename($forwardSlashed));
         }
 
         return $name;

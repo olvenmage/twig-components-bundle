@@ -41,7 +41,10 @@ class TwigComponent implements AbstractTwigComponentInterface
      */
     public function getName()
     {
-        return lcfirst(basename(get_class($this)));
+        $className = get_class($this);
+        $forwardSlashed = str_replace('\\', '/', $className);
+        
+        return lcfirst(basename($forwardSlashed));
     }
 
     /**

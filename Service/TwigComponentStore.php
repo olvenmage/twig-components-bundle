@@ -42,7 +42,11 @@ class TwigComponentStore
     public function get($name)
     {
         if (class_exists($name)) {
-            return new $name();
+            foreach($this->components as $component) {
+                if (get_class($component) === $name) {
+                    return $component;
+                }
+            }
         }
 
         if (!$this->has($name)) {
