@@ -1,7 +1,7 @@
 services:
     olveneer.component_extension:
         class: Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension
-        arguments: ['@olveneer.component_kernel', '', '']
+        arguments: ['@olveneer.component_kernel', '@olveneer.config_store']
         tags: ['twig.extension']
 
     olveneer.slot_extension:
@@ -13,11 +13,21 @@ services:
         class: Olveneer\TwigComponentsBundle\Service\TwigComponentStore
         arguments: []
 
+    olveneer.slot_node_visitor:
+        class: Olveneer\TwigComponentsBundle\Slot\SlotNodeVisitor
+
+    olveneer.config_store:
+        class: Olveneer\TwigComponentsBundle\Service\ConfigStore
+        arguments: ['/components', 'component', 'access']
+
     olveneer.component_kernel:
         class: Olveneer\TwigComponentsBundle\Service\TwigComponentKernel
-        arguments: ['@olveneer.component_store', '@twig', '']
+        arguments: ['@olveneer.component_store', '@twig', '@olveneer.config_store',  '@request_stack']
+        lazy: true
 
     Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension: '@olveneer.component_extension'
     Olveneer\TwigComponentsBundle\Service\TwigComponentStore: '@olveneer.component_store'
     Olveneer\TwigComponentsBundle\Service\TwigComponentKernel: '@olveneer.component_kernel'
     Olveneer\TwigComponentsBundle\Twig\SlotExtension:         '@olveneer.slot_extension'
+    Olveneer\TwigComponentsBundle\Slot\SlotNodeVisitor:       '@olveneer.slot_node_visitor'
+    Olveneer\TwigComponentsBundle\Service\ConfigStore:        '@olveneer.config_store'

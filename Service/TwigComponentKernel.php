@@ -2,11 +2,11 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-use App\Component\OptionResolverComponent;
 use Olveneer\TwigComponentsBundle\Component\AbstractTwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\TwigComponent;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Exception\OptionResolverNotPresentException;
-use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -17,8 +17,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class TwigComponentKernel
 {
 
-    use TwigComponentNameAccessorTrait;
-
     /**
      * @var TwigComponentStore
      */
@@ -27,7 +25,7 @@ class TwigComponentKernel
     /**
      * @var \Twig_Environment
      */
-    private $twig;
+    private $environment;
 
     /**
      * @var string
@@ -40,20 +38,26 @@ class TwigComponentKernel
     private $slotStore = [];
 
     /**
+     * @var RequestStack
+     */
+    private $requestStack;
+
+    /**
      * TwigComponentKernel constructor.
      * @param TwigComponentStore $componentStore
-     * @param \Twig_Environment $twig
+     * @param \Twig_Environment $environment
      * @param $componentDirectory
      */
-    public function __construct(TwigComponentStore $componentStore, \Twig_Environment $twig, $componentDirectory)
+    public function __construct(TwigComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore, RequestStack $requestStack)
     {
         $this->store = $componentStore;
-        $this->twig = $twig;
-        $this->componentDirectory = $componentDirectory;
+        $this->environment = $environment;
+        $this->componentDirectory = $configStore->componentDirectory;
+        $this->requestStack = $requestStack;
     }
 
     /**
-     * Returns the rendered html of the component.
+     * Returns the rendered html of a component.
      *
      * @param $name
      * @param array $props
@@ -61,21 +65,23 @@ class TwigComponentKernel
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     * @throws TemplateNotFoundException
      */
     public function renderComponent($name, $props = [])
     {
-        $component = $this->getComponent($name, $props);
+        if (!($name instanceof TwigComponentInterface)) {
+            $component = $this->getComponent($name, $props);
 
-        if (!$component instanceof TwigComponentInterface) {
-            return '';
+
+            if (!($component instanceof TwigComponentInterface)) {
+               $this->throwException($name);
+            }
+        } else {
+            $component = $name;
         }
 
-
-
         $parameters = $component->getParameters($props);
-
-        $name = $this->getComponentName($component);
-        $componentPath = $this->getComponentPath($name);
+        $componentPath = $component->getTemplatePath();
 
 
         if (substr($componentPath, 0, 1) === '/') {
@@ -84,32 +90,12 @@ class TwigComponentKernel
             $prefix = 'templates/';
         }
 
-        if (!$this->twig->getLoader()->exists($componentPath)) {
+        if (!$this->environment->getLoader()->exists($componentPath)) {
             $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
-            throw new \Twig_Error_Loader($errorMsg);
+            throw new TemplateNotFoundException($errorMsg);
         }
 
-        $this->currentTemplate = $componentPath;
-        return $this->twig->render($componentPath, $parameters);
-    }
-
-    /**
-     * Returns the path where the component twig template should be located.
-     *
-     * @param $name
-     * @return string
-     */
-    public function getComponentPath($name)
-    {
-        $component = $this->getComponent($name);
-
-        $filePath = $this->componentDirectory . '/' . $name . '.html.twig';
-
-        if ($component instanceof AbstractTwigComponentInterface) {
-            $filePath = $component->getTemplatePath();
-        }
-
-        return $filePath;
+        return $this->environment->render($componentPath, $parameters);
     }
 
     /**
@@ -121,71 +107,64 @@ class TwigComponentKernel
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
+     * @throws TemplateNotFoundException
      */
     public function render($name, $props = [])
     {
         $component = $this->getComponent($name, $props);
 
-        $response = new Response();
+        $response = $component->getRenderResponse();
 
-        if ($component instanceof AbstractTwigComponentInterface) {
-            $response = $component->getRenderResponse();
-        }
-
-        $html = $this->renderComponent($name, $props);
+        $html = $this->renderComponent($component, $props);
 
         $response->setContent($html);
 
         return $response;
     }
 
-    /**
-     * Returns the parameters of a component.
-     *
-     * @param $name
-     * @param array $props
-     * @return array
-     */
-    public function getComponentParameters($name, $props = [])
+    public function throwException($name)
     {
-        $component = $this->getComponent($name);
-
-        if (!$component instanceof TwigComponentInterface) {
-            return [];
-        }
-
-        return $component->getParameters($props);
+        throw new \ComponentNotFoundException("No component for the name '$name' found!'");
     }
 
     /**
      * @param $name
-     * @param null $props
+     * @param array $props
      * @return null|TwigComponentInterface
      */
-    public function getComponent($name, &$props = null)
+    public function getComponent($name, array &$props = [])
     {
         $component = $this->store->get($name);
 
-        if ($component instanceof AbstractTwigComponentInterface) {
-            if ($component->getComponentsRoot() === null) {
-                $component->setComponentsRoot($this->componentDirectory);
-            }
-
-            if ($props) {
-                $optionResolver = new OptionsResolver();
-
-                $isUsed = $component->configureProps($optionResolver) !== false;
-
-                if ($isUsed) {
-                    $props = $optionResolver->resolve($props);
-                }
-                
-                $component->setProps($props);
-            }
-
+        if (!($component instanceof TwigComponentInterface)) {
+            $this->throwException($name);
         }
 
+        $optionResolver = new OptionsResolver();
+
+        $isUsed = $component->configureProps($optionResolver) !== false;
+
+        if ($isUsed) {
+            $props = $optionResolver->resolve($props);
+        }
+
+        $component->setProps($props);
+        $component->setRequest($this->requestStack->getCurrentRequest());
+
         return $component;
+    }
+
+    /**
+     * Initializes the component and adds it to the store
+     *
+     * @param TwigComponent $component
+     */
+    public function register(TwigComponent $component)
+    {
+        $component->setKernel($this);
+        $component->setComponentsRoot($this->componentDirectory);
+
+        $this->store->add($component);
     }
 
     /**

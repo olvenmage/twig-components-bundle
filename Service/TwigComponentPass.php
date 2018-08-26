@@ -24,12 +24,13 @@ class TwigComponentPass implements CompilerPassInterface
             return;
         }
 
-        $definition = $container->findDefinition(TwigComponentStore::class);
+        $kernel = $container->findDefinition(TwigComponentKernel::class);
+
         
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {
-            $definition->addMethodCall('register', [new Reference($id)]);
+            $kernel->addMethodCall('register', [new Reference($id)]);
         }
     }
 }

@@ -15,15 +15,7 @@ class SlotNodeVisitor implements \Twig_NodeVisitorInterface
      */
     private $counter = 0;
     
-    /**
-     * @var TwigComponentKernel 
-     */
-    private $kernel;
-    
-    public function __construct(TwigComponentKernel $twigComponentKernel)
-    {
-        $this->kernel = $twigComponentKernel;
-    }
+    private $slots = [];
 
     /**
      * @param \Twig_Node $node
@@ -71,8 +63,8 @@ class SlotNodeVisitor implements \Twig_NodeVisitorInterface
 
             $node->setAttribute('counter', $this->counter--);
             $templateName = $node->getTemplateName();
-            
-                $this->kernel->registerSlot($html, $templateName, $slotName);
+           
+            $this->slots[$templateName] = [$slotName => $html];
         }
         return $node;
     }
@@ -91,5 +83,10 @@ class SlotNodeVisitor implements \Twig_NodeVisitorInterface
     public function getPriority()
     {
         return 0;
+    }
+
+    public function getSlots()
+    {
+        return $this->slots;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig;
 
+use Olveneer\TwigComponentsBundle\Service\ConfigStore;
 use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
 use Twig\Extension\AbstractExtension as BaseTwigExtension;
 use Twig\TwigFunction;
@@ -19,14 +20,9 @@ class TwigComponentExtension extends BaseTwigExtension
     private $kernel;
 
     /**
-     * @var string
+     * @var ConfigStore
      */
-    private $renderFunction;
-
-    /**
-     * @var string
-     */
-    private $accessFunction;
+    private $configStore;
 
     /**
      * TwigComponentExtension constructor.
@@ -34,11 +30,10 @@ class TwigComponentExtension extends BaseTwigExtension
      * @param string $renderFunction
      * @param string $accessFunction
      */
-    public function __construct(TwigComponentKernel $twigComponentKernel, $renderFunction = 'component', $accessFunction = 'access')
+    public function __construct(TwigComponentKernel $twigComponentKernel, ConfigStore $configStore)
     {
         $this->kernel = $twigComponentKernel;
-        $this->renderFunction = $renderFunction;
-        $this->accessFunction = $accessFunction;
+        $this->configStore = $configStore;
     }
 
     /**
@@ -50,13 +45,15 @@ class TwigComponentExtension extends BaseTwigExtension
         return [
 
             /** Renders a component based on its name and props */
-            new TwigFunction($this->renderFunction, function ($name, $props = []) {
+            new TwigFunction($this->configStore->renderFunction, function ($name, $props = []) {
                 return $this->kernel->renderComponent($name, $props);
             }, $isSafe),
 
             /** Returns one or more parameters from a component */
-            new TwigFunction($this->accessFunction, function ($name, $requestedParameters, $props = []) {
-                $parameters = $this->kernel->getComponentParameters($name, $props);
+            new TwigFunction($this->configStore->accessFunction, function ($name, $requestedParameters, $props = []) {
+
+                $component = $this->kernel->getComponent($name, $props);
+                $parameters = $component->getParameters($props);
 
                 $getParameter = function ($parameter) use ($parameters) {
                     if (isset($parameters[$parameter])) {

@@ -32,11 +32,12 @@ class OlveneerTwigComponentsExtension extends Extension
         $config = $this->processConfiguration($configuration, $configs);
         $templatingOptions = $config['templating'];
 
-        $kernelDefinition = $container->getDefinition('olveneer.component_kernel');
-        $kernelDefinition->replaceArgument(2, $config['components_directory']);
+        $configDefinition = $container->getDefinition('olveneer.config_store');
+        $configDefinition->replaceArgument(0, $config['components_directory']);
+        $configDefinition->replaceArgument(1, $templatingOptions['render_function']);
+        $configDefinition->replaceArgument(2, $templatingOptions['access_function']);
 
-        $loaderDefinition = $container->getDefinition('olveneer.component_extension');
-        $loaderDefinition->replaceArgument(1, $templatingOptions['render_function']);
-        $loaderDefinition->replaceArgument(2, $templatingOptions['access_function']);
+
+
     }
 }

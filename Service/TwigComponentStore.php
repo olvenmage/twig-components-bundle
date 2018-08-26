@@ -10,7 +10,6 @@ use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
  */
 class TwigComponentStore
 {
-    use TwigComponentNameAccessorTrait;
 
     /**
      * @var TwigComponentInterface[]
@@ -22,15 +21,13 @@ class TwigComponentStore
      *
      * @param TwigComponentInterface|null $component
      */
-    public function register($component)
+    public function add($component)
     {
         if (!$component instanceof TwigComponentInterface) {
             return;
         }
 
-        $name = $this->getComponentName($component);
-
-        $this->components[$name] = $component;
+        $this->components[$component->getName()] = $component;
     }
 
     /**

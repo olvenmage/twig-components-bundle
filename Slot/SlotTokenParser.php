@@ -12,6 +12,7 @@ class SlotTokenParser extends \Twig_TokenParser
      * @var string 
      */
     private $endTag = 'endslot';
+    
 
     /**
      * @param \Twig_Token $token
@@ -30,8 +31,8 @@ class SlotTokenParser extends \Twig_TokenParser
         $continue = true;
         while ($continue)
         {
-            // create subtree until the decideMyTagFork() callback returns true
-            $body = $this->parser->subparse([$this, 'decideMyTagFork']);
+            // create subtree until the decideSlotEnd() callback returns true
+            $body = $this->parser->subparse([$this, 'decideSlotEnd']);
 
             $tag = $stream->next()->getValue();
 
@@ -82,7 +83,7 @@ class SlotTokenParser extends \Twig_TokenParser
      * @param \Twig_Token $token
      * @return bool
      */
-    public function decideMyTagFork(\Twig_Token $token)
+    public function decideSlotEnd(\Twig_Token $token)
     {
         return $token->test([$this->endTag]);
     }
