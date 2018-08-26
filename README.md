@@ -7,8 +7,7 @@ A lightweight symfony bundle that provides easy ways to implement a modular, com
 # Usage
 **The class**
 
-Each component requires a special service implementing either `NamedTwigComponentInterface` or `TwigComponentInterface`, 
-we'll get to the difference of those in a minute.
+Each component requires a special service extending the `TwigComponent` class or implementing the `TwigComponentInterface`.
 
      /**
       * Returns the parameters to be used when rendering the template.
@@ -24,10 +23,12 @@ we'll get to the difference of those in a minute.
          ];
      }
 
-When using `TwigComponentInterface`, this is the only method you'll need, 
-a function returning the parameters for your twig component. What are these `$props`, you ask? Well, component's main advantage is that they can be reused multiple times. However, rarely do you ever need the 100% exact same component, so props function as options to make your parameters more dynamic. Confused? Don't worry, it will all get more clear later.
+a function returning the parameters for your twig component. What are these `$props`, you ask? Well, a component's main advantage is that they can be reused multiple times. However, rarely do you ever need the 100% exact same component, so props function as options to make your parameters more dynamic. Confused? Don't worry, it will all get more clear later.
 
-When using `NamedTwigComponentInterface` you will also have the getName() method included:
+
+Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how the component's name is determined:
+take the last part of the class name, so in this case, TestComponent. Next, we make it camelcased, so it will be
+'testComponent'. If you want a custom name, use: <br>
 
     /**
      * Returns the string to use as a name for the component.
@@ -39,12 +40,7 @@ When using `NamedTwigComponentInterface` you will also have the getName() method
         return 'testComponent';
     }
 
-What is the name of a component? When rendering the component, or wanting to receive data from one, it's name is used
-to reference it. When using `TwigComponentInterface` instead of `NamedTwigComponent`, the component still gets a name, except that it's automatically generated.
 
-Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how we determine the name is:
-take the last part of the class name, so in this case, TestComponent. Next, we make it camelcased, so it will be
-'testComponent'.
 
 Now, these services are not automatically registered as Twig Components, you need to register the service with an extra
 `olveneer.component` tag. example:
