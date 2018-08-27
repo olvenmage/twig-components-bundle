@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Slot;
+namespace Olveneer\TwigComponentsBundle\Twig\tags\slot;
 
 /**
  * Class SlotNode
@@ -9,26 +9,6 @@ namespace Olveneer\TwigComponentsBundle\Slot;
 class SlotNode extends \Twig_Node
 {
 
-//    public function __construct($name, Twig_Node $body, $lineno, $tag = null)
-//    {
-//        parent::__construct(array('body' => $body), array('name' => $name), $lineno, $tag);
-//    }
-//
-//    public function compile(Twig_Compiler $compiler)
-//    {
-//        $compiler
-//            ->addDebugInfo($this)
-//            ->write(sprintf("public function slot_%s(\$context, array \$blocks = array())\n", $this->getAttribute('name')), "{\n")
-//            ->indent()
-//        ;
-//
-//        $compiler
-//            ->subcompile($this->getNode('body'))
-//            ->outdent()
-//            ->write("}\n\n")
-//        ;
-//    }
-//
     /**
      * SlotNode constructor.
      * @param $params
@@ -57,7 +37,6 @@ class SlotNode extends \Twig_Node
             // to the functionToCall() function.
             if (!($this->getNode('params')->getNode($i) instanceof \Twig_Node_Expression))
             {
-
                 $compiler
                     ->write('ob_start();')
                     ->raw(PHP_EOL);
@@ -79,9 +58,16 @@ class SlotNode extends \Twig_Node
             }
         }
 
+
+        $compiler
+            ->write('$this->extensions[')
+            ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
+            ->write(']->getKernel()->registerSlot($this->getTemplateName(), $_slot );')
+            ->raw(PHP_EOL);
+
         $compiler
             ->write(sprintf('unset($_slot[%d]);', $this->getAttribute('counter')))
             ->raw(PHP_EOL);
     }
-    
+
 }

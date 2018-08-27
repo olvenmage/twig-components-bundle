@@ -120,7 +120,6 @@ interface TwigComponentInterface
      */
     public function renderComponent(array $props = []);
 
-
     /**
      * Injects the current request into the component
      *

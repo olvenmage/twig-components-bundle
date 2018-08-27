@@ -3,8 +3,9 @@
 namespace Olveneer\TwigComponentsBundle\Twig;
 
 use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
-use Olveneer\TwigComponentsBundle\Slot\SlotTokenParser;
-use Olveneer\TwigComponentsBundle\Slot\SlotNodeVisitor;
+use Olveneer\TwigComponentsBundle\Twig\tags\component\ComponentParser;
+use Olveneer\TwigComponentsBundle\Twig\tags\slot\SlotTokenParser;
+use Olveneer\TwigComponentsBundle\Twig\tags\slot\SlotNodeVisitor;
 use Twig\TwigFunction;
 
 /**
@@ -34,7 +35,7 @@ class SlotExtension extends \Twig_Extension
      */
     public function getTokenParsers()
     {
-        return [new SlotTokenParser()];
+        return [new SlotTokenParser(), new ComponentParser()];
     }
 
     /**
@@ -50,7 +51,12 @@ class SlotExtension extends \Twig_Extension
      */
     public function getNodeVisitors()
     {
-        return [new SlotNodeVisitor($this->kernel)];
+        return [new SlotNodeVisitor()];
+    }
+
+    public function getKernel()
+    {
+        return $this->kernel;
     }
 
 }

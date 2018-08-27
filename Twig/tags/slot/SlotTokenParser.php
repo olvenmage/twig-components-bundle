@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Slot;
+namespace Olveneer\TwigComponentsBundle\Twig\tags\slot;
 
 /**
  * Class SlotTokenParser

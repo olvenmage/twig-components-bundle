@@ -42,6 +42,8 @@ class TwigComponentKernel
      */
     private $requestStack;
 
+    private $curr;
+
     /**
      * TwigComponentKernel constructor.
      * @param TwigComponentStore $componentStore
@@ -90,11 +92,13 @@ class TwigComponentKernel
             $prefix = 'templates/';
         }
 
+
+
         if (!$this->environment->getLoader()->exists($componentPath)) {
             $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
             throw new TemplateNotFoundException($errorMsg);
         }
-
+   
         return $this->environment->render($componentPath, $parameters);
     }
 
@@ -174,9 +178,14 @@ class TwigComponentKernel
      * @param $template
      * @param $name
      */
-    public function registerSlot($html, $template, $name)
+    public function registerSlot($html, $name)
     {
-        $this->slotStore[$name] = $html;
+        $html = $html[1];
+
+        if (!isset($this->slotStore[$name])) {
+            $this->slotStore[$name] = [];
+        }
+        $this->slotStore[$name][$html[1]] = $html[0];
     }
 
     /**
@@ -187,6 +196,8 @@ class TwigComponentKernel
      */
     public function getSlot($name)
     {
+
         return $this->slotStore[$name];
     }
+
 }
