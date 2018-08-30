@@ -11,11 +11,6 @@ class SlotsResolver
     public $slots;
 
     /**
-     * @var string
-     */
-    private $componentInTreatment;
-
-    /**
      * @var string[]
      */
     private $requiredSlots = [];
@@ -30,7 +25,7 @@ class SlotsResolver
 
         foreach ($this->requiredSlots as $slotName) {
             if (!isset($slots[$slotName])) {
-                throw new MissingSlotException("$slotName missing");
+                throw new MissingSlotException("the slot $slotName is required but is never supplied.");
             }
         }
 
@@ -142,16 +137,9 @@ class SlotsResolver
     /**
      * @param $slot
      * @return SlotValidatorNode
-     * @throws SlotResolverSyntaxException
      */
     public function checkSlot($slot)
     {
-        if ($this->componentInTreatment) {
-            throw new SlotResolverSyntaxException("Already checking the " . $this->componentInTreatment . " slot.");
-        }
-
-        $this->componentInTreatment = $slot;
-
         return new SlotValidatorNode($slot, $this);
     }
 }
