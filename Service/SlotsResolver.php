@@ -2,97 +2,156 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-
 class SlotsResolver
 {
 
-    private $requiredElements;
+    /**
+     * @var array
+     */
+    public $slots;
 
     /**
-     * @param $html
-     * @throws ElementMismatchException
+     * @var string
      */
-    public function configure($html)
+    private $componentInTreatment;
+
+    /**
+     * @var string[]
+     */
+    private $requiredSlots = [];
+
+    /**
+     * @param $slots
+     * @throws ElementMismatchException
+     * @throws MissingSlotException
+     */
+    public function configure($slots)
     {
+
+        foreach ($this->requiredSlots as $slotName) {
+            if (!isset($slots[$slotName])) {
+                throw new MissingSlotException("$slotName missing");
+            }
+        }
+
+        foreach ($slots as $name => &$slot) {
+
+            $baseOptions = [];
+            if (isset($this->slots[$name])) {
+                $baseOptions = $this->slots[$name];
+            }
+
+            $slot = array_merge(['html' => $slot, 'requiredElements' => []], $baseOptions);
+        }
+
         $pattern = '/<(?<tag>\w+)(?<attribute>(?:\s+\w+(?:\s*=\s*(?:(?:"[^"]*")|(?:\'[^\']*\')|[^>\s]+))?)*)\s*(\/?)>/';
 
-        $matches = [];
-        preg_match_all($pattern, $html, $matches);
+        foreach ($slots as $name => $options) {
+            foreach ($options['requiredElements'] as $tag => $elementSpecifications) {
+                $matches = [];
+                preg_match_all($pattern, $options['html'], $matches);
 
-        $tags = $matches['tag'];
-        $attributes = $matches['attribute'];
+                $tags = $matches['tag'];
+                $attributes = $matches['attribute'];
 
-        foreach ($this->requiredElements as $tag => $options) {
-            $wantedAttributes = $options['attributes'];
-            $amount = $options['amount'];
+                $wantedAttributes = $elementSpecifications['attributes'];
+                $amount = $elementSpecifications['amount'];
 
-            $found = array_keys($tags, $tag);
+                $found = array_keys($tags, $tag);
 
-            if ($wantedAttributes) {
-                foreach ($found as $key => $val) {
-                    $attribute = $attributes[$key];
+                if ($wantedAttributes) {
+                    foreach ($found as $key => $val) {
+                        $attribute = $attributes[$key];
 
-                    if (!$attribute) {
-                        unset($found[$key]);
-                    } else {
-                        $attributesParts = explode(' ', $attribute);
+                        if (!$attribute) {
+                            unset($found[$key]);
+                        } else {
+                            $attributesParts = explode(' ', $attribute);
 
-                        foreach($attributesParts as $part) {
-                            if (!$part) {
-                                continue;
-                            }
-
-                            $parts = explode('=', $part);
-
-                            $foundAttribute = false;
-                            for ($i = 0; $i < count($parts); $i++) {
-                                $attrKey = $parts[0];
-                                $attrValue =  substr($parts[1], 1, -1);
-
-                                if (isset($wantedAttributes[$attrKey])) {
-                                    $wantedValue = $wantedAttributes[$attrKey];
-
-                                    if (is_callable($wantedValue)) {
-                                        $check = $wantedValue($attrValue);
-                                    } else {
-                                        $check = ($wantedAttributes[$attrKey] === $attrValue || $wantedAttributes[$attrKey] === 'any');
-                                    }
-
-                                    if ($check) {
-                                        $foundAttribute = true;
-                                        break;
-                                    }
+                            foreach ($attributesParts as $part) {
+                                if (!$part) {
+                                    continue;
                                 }
-                                // check if the attribute values match or if the wanted attribute is ''.
 
-                                $i++;
-                            }
+                                $parts = explode('=', $part);
 
-                            if (!$foundAttribute) {
-                                unset($found[$key]);
-                            } else {
-                                break;
+                                $foundAttribute = false;
+                                for ($i = 0; $i < count($parts); $i++) {
+                                    $attrKey = $parts[0];
+                                    $attrValue = substr($parts[1], 1, -1);
+
+                                    if (isset($wantedAttributes[$attrKey])) {
+                                        $wantedValue = $wantedAttributes[$attrKey];
+
+                                        if (is_callable($wantedValue)) {
+                                            $check = $wantedValue($attrValue);
+                                        } else {
+                                            $check = ($wantedAttributes[$attrKey] === $attrValue || $wantedAttributes[$attrKey] === 'any');
+                                        }
+
+                                        if ($check) {
+                                            $foundAttribute = true;
+                                            break;
+                                        }
+                                    }
+                                    // check if the attribute values match or if the wanted attribute is ''.
+
+                                    $i++;
+                                }
+
+                                if (!$foundAttribute) {
+                                    unset($found[$key]);
+                                } else {
+                                    break;
+                                }
                             }
                         }
                     }
                 }
-            }
 
-            if (count($found) < $amount) {
-                $attributesJson = json_encode($wantedAttributes);
+                if (count($found) < $amount) {
 
-                $pluralTags = 'tag';
-                if ($amount > 1) {
+
                     $pluralTags = 'tag';
-                }
+                    if ($amount > 1) {
+                        $pluralTags = 'tag';
+                    }
 
-                throw new ElementMismatchException("Slot content does not match the element requirement of $amount $tag $pluralTags having the $attributesJson attributes");
+                    $attributeNotice = '';
+
+                    if (count($wantedAttributes)) {
+                        $attributesJson = json_encode($wantedAttributes);
+
+                        $attributeNotice = "containing the $attributesJson attributes";
+                    }
+
+                    throw new ElementMismatchException("the content for the slot '$name' does not match the element requirement of $amount <$tag> $pluralTags $attributeNotice");
+                }
             }
         }
     }
 
-    public function requireElement($tag, $amount = 1, $attributes = [])
+    /**
+     * @param array $slots
+     */
+    public function requireSlots($slots = [])
     {
-        $this->requiredElements[$tag] = ['attributes' => $attributes, 'amount' => $amount];
+        $this->requiredSlots = $slots;
+    }
+
+    /**
+     * @param $slot
+     * @return SlotValidatorNode
+     * @throws SlotResolverSyntaxException
+     */
+    public function checkSlot($slot)
+    {
+        if ($this->componentInTreatment) {
+            throw new SlotResolverSyntaxException("Already checking the " . $this->componentInTreatment . " slot.");
+        }
+
+        $this->componentInTreatment = $slot;
+
+        return new SlotValidatorNode($slot, $this);
     }
 }

@@ -174,9 +174,19 @@ class ComponentRenderer
     /**
      * @param $slots
      */
-    public function openSlots($slots)
+    public function openSlots($componentName, $slots)
     {
-       $this->slotStore = json_decode($slots, true);
+        $resolver = new SlotsResolver();
+
+        $component = $this->getComponent($componentName);
+
+        $component->configureSlots($resolver);
+
+        $slots = json_decode($slots, true);
+
+        $resolver->configure($slots);
+
+       $this->slotStore = $slots;
     }
 
     /**

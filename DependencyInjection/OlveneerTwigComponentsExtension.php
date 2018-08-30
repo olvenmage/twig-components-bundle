@@ -30,13 +30,9 @@ class OlveneerTwigComponentsExtension extends Extension
         $configuration = new Configuration();
 
         $config = $this->processConfiguration($configuration, $configs);
-        $templatingOptions = $config['templating'];
 
         $configDefinition = $container->getDefinition('olveneer.config_store');
         $configDefinition->replaceArgument(0, $config['components_directory']);
-        $configDefinition->replaceArgument(1, $templatingOptions['render_function']);
-        $configDefinition->replaceArgument(2, $templatingOptions['access_function']);
-
 
 
     }

@@ -55,7 +55,7 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
 
         $compiler
-            ->write('$renderer->openSlots(\''  .  json_encode($this->supplied) . '\'); ')->raw("\n");
+            ->write('$renderer->openSlots("'.$componentName.'", \''  .  json_encode($this->supplied) . '\'); ')->raw("\n");
 
         $compiler
             ->raw('echo ')
