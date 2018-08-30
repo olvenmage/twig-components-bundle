@@ -7,10 +7,10 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
 /**
- * Class TwigComponentPass
+ * Class ComponentPass
  * @package App\Olveneer\TwigComponentsBundle\Service
  */
-class TwigComponentPass implements CompilerPassInterface
+class ComponentPass implements CompilerPassInterface
 {
     
     /**
@@ -20,17 +20,17 @@ class TwigComponentPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if (!$container->has(TwigComponentStore::class)) {
+        if (!$container->has(ComponentStore::class)) {
             return;
         }
 
-        $kernel = $container->findDefinition(TwigComponentKernel::class);
+        $renderer = $container->findDefinition(ComponentRenderer::class);
 
         
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {
-            $kernel->addMethodCall('register', [new Reference($id)]);
+            $renderer->addMethodCall('register', [new Reference($id)]);
         }
     }
 }

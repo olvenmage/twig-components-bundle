@@ -2,10 +2,11 @@
 
 namespace Olveneer\TwigComponentsBundle\Component;
 
-use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
-use Symfony\Component\HttpFoundation\Request;
+use Olveneer\TwigComponentsBundle\Service\SlotsResolver;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Olveneer\TwigComponentsBundle\Service\TestS;
 
 /**
  * Class TwigComponent
@@ -25,14 +26,9 @@ class TwigComponent implements TwigComponentInterface
     private $props;
 
     /**
-     * @var TwigComponentKernel
+     * @var ComponentRenderer
      */
-    private $kernel;
-
-    /**
-     * @var Request
-     */
-    private $request;
+    private $renderer;
 
     /**
      * Returns the parameters to be used when rendering the template.
@@ -153,15 +149,20 @@ class TwigComponent implements TwigComponentInterface
         return false;
     }
 
+    public function configureSlots(SlotsResolver $resolver)
+    {
+        
+    }
+
     /**
-     * Injects the kernel into the component for rendering.
+     * Injects the renderer into the component for rendering.
      *
-     * @param TwigComponentKernel $twigComponentKernel
+     * @param ComponentRenderer $componentRenderer
      * @return void
      */
-    public function setKernel(TwigComponentKernel $twigComponentKernel)
+    public function setRenderer(ComponentRenderer $componentRenderer)
     {
-        $this->kernel = $twigComponentKernel;
+        $this->renderer = $componentRenderer;
     }
 
     /**
@@ -170,10 +171,13 @@ class TwigComponent implements TwigComponentInterface
      * @param array $props
      * @return String
      * @throws \Olveneer\TwigComponentsBundle\Service\TemplateNotFoundException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function renderComponent(array $props = [])
     {
-        return $this->kernel->renderComponent($this->getName(), $props);
+        return $this->renderer->renderComponent($this->getName(), $props);
     }
 
     /**
@@ -182,30 +186,12 @@ class TwigComponent implements TwigComponentInterface
      * @param array $props
      * @return Response
      * @throws \Olveneer\TwigComponentsBundle\Service\TemplateNotFoundException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function render(array $props = [])
     {
-        return $this->kernel->render($this->getName(), $props);
-    }
-
-    /**
-     *  Injects the current request into the component
-     *
-     * @param $request
-     * @return mixed|void
-     */
-    public function setRequest($request)
-    {
-        $this->request = $request;
-    }
-
-    /**
-     * Get the current active request
-     *
-     * @return Request
-     */
-    public function getRequest()
-    {
-        return $this->request;
+        return $this->renderer->render($this->getName(), $props);
     }
 }

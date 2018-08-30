@@ -1,18 +1,18 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Twig\tags\slot;
+namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
 /**
  * Class SlotTokenParser
  * @package Olveneer\TwigComponentsBundle\Slot
  */
-class SlotTokenParser extends \Twig_TokenParser
+class CollectParser extends \Twig_TokenParser
 {
     /**
-     * @var string 
+     * @var string
      */
-    private $endTag = 'endslot';
-    
+    private $endTag = 'endcollect';
+
 
     /**
      * @param \Twig_Token $token
@@ -32,7 +32,7 @@ class SlotTokenParser extends \Twig_TokenParser
         while ($continue)
         {
             // create subtree until the decideSlotEnd() callback returns true
-            $body = $this->parser->subparse([$this, 'decideSlotEnd']);
+            $body = $this->parser->subparse([$this, 'decideCollectEnd']);
 
             $tag = $stream->next()->getValue();
 
@@ -42,7 +42,7 @@ class SlotTokenParser extends \Twig_TokenParser
                     $continue = false;
                     break;
                 default:
-                    throw new \Twig_Error_Syntax(sprintf("Unexpected end of template. Twig was looking for the following tags '$this->endTag' to close the '$this->endTag' block started at line %d)", $lineno), -1);
+                    throw new \Twig_Error_Syntax(sprintf("Unexpected end of template. Twig was looking for the following tag '$this->endTag' to close the '$this->endTag' block started at line %d)", $lineno), -1);
             }
 
             // you want $body at the beginning of your arguments
@@ -54,7 +54,7 @@ class SlotTokenParser extends \Twig_TokenParser
             $stream->expect(\Twig_Token::BLOCK_END_TYPE);
         }
 
-        return new SlotNode(new \Twig_Node($params), $lineno, $this->getTag());
+        return new CollectNode(new \Twig_Node($params), $lineno, $this->getTag());
     }
 
     /**
@@ -83,7 +83,7 @@ class SlotTokenParser extends \Twig_TokenParser
      * @param \Twig_Token $token
      * @return bool
      */
-    public function decideSlotEnd(\Twig_Token $token)
+    public function decideCollectEnd(\Twig_Token $token)
     {
         return $token->test([$this->endTag]);
     }
@@ -96,6 +96,6 @@ class SlotTokenParser extends \Twig_TokenParser
      */
     public function getTag()
     {
-        return 'slot';
+        return 'collect';
     }
 }

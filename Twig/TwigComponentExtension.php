@@ -3,7 +3,7 @@
 namespace Olveneer\TwigComponentsBundle\Twig;
 
 use Olveneer\TwigComponentsBundle\Service\ConfigStore;
-use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Twig\Extension\AbstractExtension as BaseTwigExtension;
 use Twig\TwigFunction;
 
@@ -15,9 +15,9 @@ class TwigComponentExtension extends BaseTwigExtension
 {
 
     /**
-     * @var TwigComponentKernel
+     * @var ComponentRenderer
      */
-    private $kernel;
+    private $renderer;
 
     /**
      * @var ConfigStore
@@ -26,13 +26,12 @@ class TwigComponentExtension extends BaseTwigExtension
 
     /**
      * TwigComponentExtension constructor.
-     * @param TwigComponentKernel $twigComponentKernel
-     * @param string $renderFunction
-     * @param string $accessFunction
+     * @param ComponentRenderer $componentRenderer
+     * @param ConfigStore $configStore
      */
-    public function __construct(TwigComponentKernel $twigComponentKernel, ConfigStore $configStore)
+    public function __construct(ComponentRenderer $componentRenderer, ConfigStore $configStore)
     {
-        $this->kernel = $twigComponentKernel;
+        $this->renderer = $componentRenderer;
         $this->configStore = $configStore;
     }
 
@@ -41,18 +40,12 @@ class TwigComponentExtension extends BaseTwigExtension
      */
     public function getFunctions()
     {
-        $isSafe = ['is_safe' => ['html']];
         return [
 
-            /** Renders a component based on its name and props */
-            new TwigFunction($this->configStore->renderFunction, function ($name, $props = []) {
-                return $this->kernel->renderComponent($name, $props);
-            }, $isSafe),
-
             /** Returns one or more parameters from a component */
-            new TwigFunction($this->configStore->accessFunction, function ($name, $requestedParameters, $props = []) {
+            new TwigFunction('access', function ($name, $requestedParameters, $props = []) {
 
-                $component = $this->kernel->getComponent($name, $props);
+                $component = $this->renderer->getComponent($name, $props);
                 $parameters = $component->getParameters($props);
 
                 $getParameter = function ($parameter) use ($parameters) {
@@ -74,7 +67,7 @@ class TwigComponentExtension extends BaseTwigExtension
                 } else {
                     return $getParameter($requestedParameters);
                 }
-            }, $isSafe)
+            }, ['is_safe' => ['html', 'deprecated' => true]])
 
         ];
     }

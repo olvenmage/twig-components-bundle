@@ -2,23 +2,21 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-use Olveneer\TwigComponentsBundle\Component\AbstractTwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponent;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
-use Olveneer\TwigComponentsBundle\Exception\OptionResolverNotPresentException;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
- * Class TwigComponentKernel
- * @package App\Olveneer\TwigComponentsBundle\Service
+ * Class ComponentRenderer
+ * @package Olveneer\TwigComponentsBundle\Service
  */
-class TwigComponentKernel
+class ComponentRenderer
 {
 
     /**
-     * @var TwigComponentStore
+     * @var ComponentStore
      */
     private $store;
 
@@ -42,15 +40,14 @@ class TwigComponentKernel
      */
     private $requestStack;
 
-    private $curr;
-
     /**
-     * TwigComponentKernel constructor.
-     * @param TwigComponentStore $componentStore
+     * ComponentRenderer constructor.
+     * @param ComponentStore $componentStore
      * @param \Twig_Environment $environment
-     * @param $componentDirectory
+     * @param ConfigStore $configStore
+     * @param RequestStack $requestStack
      */
-    public function __construct(TwigComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore, RequestStack $requestStack)
+    public function __construct(ComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore, RequestStack $requestStack)
     {
         $this->store = $componentStore;
         $this->environment = $environment;
@@ -71,6 +68,7 @@ class TwigComponentKernel
      */
     public function renderComponent($name, $props = [])
     {
+
         if (!($name instanceof TwigComponentInterface)) {
             $component = $this->getComponent($name, $props);
 
@@ -98,7 +96,7 @@ class TwigComponentKernel
             $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
             throw new TemplateNotFoundException($errorMsg);
         }
-   
+
         return $this->environment->render($componentPath, $parameters);
     }
 
@@ -126,6 +124,9 @@ class TwigComponentKernel
         return $response;
     }
 
+    /**
+     * @param $name
+     */
     public function throwException($name)
     {
         throw new \ComponentNotFoundException("No component for the name '$name' found!'");
@@ -153,7 +154,6 @@ class TwigComponentKernel
         }
 
         $component->setProps($props);
-        $component->setRequest($this->requestStack->getCurrentRequest());
 
         return $component;
     }
@@ -165,39 +165,44 @@ class TwigComponentKernel
      */
     public function register(TwigComponent $component)
     {
-        $component->setKernel($this);
+        $component->setRenderer($this);
         $component->setComponentsRoot($this->componentDirectory);
 
         $this->store->add($component);
     }
 
     /**
-     * [WIP]
-     *
-     * @param $html
-     * @param $template
-     * @param $name
+     * @param $slots
      */
-    public function registerSlot($html, $name)
+    public function openSlots($slots)
     {
-        $html = $html[1];
-
-        if (!isset($this->slotStore[$name])) {
-            $this->slotStore[$name] = [];
-        }
-        $this->slotStore[$name][$html[1]] = $html[0];
+       $this->slotStore = json_decode($slots, true);
     }
 
     /**
-     * [WIP]
-     *
+     * @return mixed
+     */
+    public function closeSlots()
+    {
+        $this->slotStore = [];
+    }
+
+    /**
      * @param $name
      * @return mixed
      */
     public function getSlot($name)
     {
-
         return $this->slotStore[$name];
     }
 
+    /**
+     * @param $name
+     * @return bool
+     */
+    public function hasSlot($name)
+    {
+        return isset($this->slotStore[$name]);
+
+    }
 }

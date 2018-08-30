@@ -3,7 +3,7 @@
 namespace Olveneer\TwigComponentsBundle\Component;
 
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -97,12 +97,12 @@ interface TwigComponentInterface
     public function setProps($props);
 
     /**
-     * Injects the kernel into the component for rendering.
+     * Injects the renderer into the component for rendering.
      *
-     * @param TwigComponentKernel $twigComponentKernel
+     * @param ComponentRenderer $componentRenderer
      * @return void
      */
-    public function setKernel(TwigComponentKernel $twigComponentKernel);
+    public function setRenderer(ComponentRenderer $componentRenderer);
 
     /**
      * Returns a response holding the html of a component.
@@ -119,19 +119,4 @@ interface TwigComponentInterface
      * @return string
      */
     public function renderComponent(array $props = []);
-
-    /**
-     * Injects the current request into the component
-     *
-     * @param $request
-     * @return mixed
-     */
-    public function setRequest($request);
-
-    /**
-     * Get the current active request
-     *
-     * @return Request
-     */
-    public function getRequest();
 }

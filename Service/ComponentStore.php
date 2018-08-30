@@ -5,10 +5,10 @@ namespace Olveneer\TwigComponentsBundle\Service;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 
 /**
- * Class TwigComponentStore
+ * Class ComponentStore
  * @package App\Olveneer\TwigComponentsBundle\Service
  */
-class TwigComponentStore
+class ComponentStore
 {
 
     /**

@@ -2,7 +2,6 @@
 
 namespace Olveneer\TwigComponentsBundle\DependencyInjection;
 
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -20,6 +19,7 @@ class OlveneerTwigComponentsExtension extends Extension
      *
      * @param array $configs
      * @param ContainerBuilder $container
+     * @throws \Exception
      */
     public function load(array $configs, ContainerBuilder $container)
     {

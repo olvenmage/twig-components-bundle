@@ -22,13 +22,27 @@ Each component requires a special service extending the `TwigComponent` class or
            'test' => 123
          ];
      }
-
+     
+    
 a function returning the parameters for your twig component. What are these `$props`, you ask? Well, a component's main advantage is that they can be reused multiple times. However, rarely do you ever need the 100% exact same component, so props function as options to make your parameters more dynamic. Confused? Don't worry, it will all get more clear later.
 
+     /**
+      * Configures the props using the Symfony OptionResolver
+      *
+      * @param OptionsResolver $resolver
+      */
+     public function configureProps(OptionsResolver $resolver)
+     {
+        $resolver->setDefaults(['someProp' => 'someValue']);
+     }
 
+The `configureProps` method can be used to make sure your component always functions the way it should. 
+This shouldn't be anything new if you've been using symfony for a while.
+
+Let's determine the name of our component: 
 Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how the component's name is determined:
 take the last part of the class name, so in this case, TestComponent. Next, we make it camelcased, so it will be
-'testComponent'. If you want a custom name, use: <br>
+'testComponent' (this is also called the `short class name`). If you want a custom name, use: <br>
 
     /**
      * Returns the string to use as a name for the component.
@@ -39,8 +53,6 @@ take the last part of the class name, so in this case, TestComponent. Next, we m
     {
         return 'testComponent';
     }
-
-
 
 Now, these services are not automatically registered as Twig Components, you need to register the service with an extra
 `olveneer.component` tag. example:
@@ -63,7 +75,7 @@ First, create a separate directory from your Service folder for your components 
  
  This takes every service from the Component directory and marks it as a Twig Component.
  
- **The template**
+ **Rendering**
 
 When you have configured your component class it's time to create the template. The location of the template should be
 in `templates/components/<component_name>.html.twig`. (You will get an error message stating this too).
@@ -85,34 +97,96 @@ Let's look at method A first.
 
 Inside any template, you can use the following syntax:
 
-`component($componentName, $props = [])` <br>
-To render the component there while passing on optional props.
+`{% get 'name' %} {% endget %}` <br>
+This renders the component without passing props, to do that, use this:
 
-The name for this function is also configurable, again, we'll get to that.
+`{% get 'name' with { someProp: 'someValue' } %} {% endget %}` <br>
 
-Method B is, injecting the `TwigComponentKernel` into your service or controller and either call the 
-`renderComponent($componentName, $props = [])` function if you just want to get the html, or the 
-`render($componentName, $props = [])` to immediately get the response for the browser.
+Method B is, injecting the `Component` into your service or controller and either call the 
+`renderComponent( $props = [])` function if you just want to get the html, or the 
+`render($props = [])` to immediately get the response for the browser.
 
 example:
 
     /**
      * @Route(path="/")
-     * @param TwigComponentKernel $kernel
+     * @param TestComponent $testComponent
      * @return \Symfony\Component\HttpFoundation\Response
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      */
-    public function test(TwigComponentKernel $kernel)
+    public function test(TestComponent $testComponent)
     {
-        return $kernel->render(TestComponent::class);
+        return $testComponent->render();
     }
     
-Note that in the example I used `TestComponent::class` to retrieve the component instead of the component name, this is
-an alternative way to render or retrieve the component. The 'normal' way is via
+`$component->render($props = []);`
 
-`$kernel->render('testComponent');`
+**The slot system**
+
+TwigComponents also have the build-in functionality to pass html instead of just variables.
+
+Let's say you have a component named 'card' using the template `card.html.twig` file which renders a bootstrap card.
+
+    // card.html.twig
+    
+    <div class="card"> 
+        <div class="card-header">
+            {% collect 'header' %}
+                 <h1> default header value </h1>
+             {% endcollect %}
+        </div>
+        <div class="card-body">
+            {% collect 'body' %}
+                 <h1> default body value </h1>
+             {% endcollect %}
+        </div>
+    </div>
+    
+If you're familiar with Vue or React you're probably realising what's going on. This component is asking
+for certain blocks of markup. The value you see inbetween the collect blocks is a default value if nothing
+is `supplied`.
+
+Now we want to use this card component in one of our templates:
+
+    // index.html.twig
+    
+    <body>
+        {% get 'card' %}
+            {% supply 'header' %}
+                <div> My own html! </div>
+            {% endsupply %}
+        {% endget %}
+    </body>
+    
+So this will result in the rendering of the mainComponent where the header slot will be filled in
+with `<div> My own html! </div>` and the body defaulting to `<h1> default body value </h1>`.
+
+We can of course also supply our body if we want to like this:
+
+    // index.html.twig
+    
+    <body>
+        {% get 'card' %}
+            {% supply 'header' %}
+                <div> My own html! </div>
+            {% endsupply %}
+            
+            {% supply 'body' %}
+                <div> A cool body </div>
+            {% endsupply %}
+        {% endget %}
+    </body>
+    
+    
+**Best Practices**
+
+A couple of best practices for the best long-term update support and overall code optimization.
+
+* Use the default `getName()` as much as possible (returning the short class name).
+* Use the `configureProps()` method if applicable.
+* Use the earlier stated auto configuring of the components with some specific configuring for edge-cases.
 
 **The config**
 
@@ -122,31 +196,9 @@ Now we finally get to the config, I will show you an example configuration file.
     
     olveneer_twig_components:
         components_directory: '/components'
-        templating:
-            render_function: 'render'
-            access_function: 'access'
-
-You might notice that besides the already known render funciton, there is also an access function stated, this 
-function can be used to retrieve parameters from components inside the template, two quick access examples:
-
-        {{ component('secondComponent', {test: 2}) }} // renders secondComponent with props: {test: 2}
-        
-        {% set params = access('secondComponent', ['asd', 'kernel'], { test: 2 })  %} {# writes the asd and kernel parameter to the 'params' variable. #}
-        
-        {{ params['asd'] }} {# prints the value for the asd paramter #}
-        {{ params['kernel'] }} {# prints the value for the kernel paramter #}
-        
-        {{ access('secondComponent', 'asd') }} {# prints the value for the asd paramter #}
-        
-From this example you can see the component function being used, as well as the access function:
-
-`access($componentName, $parameters, $props = [])`
-
-as you might have noticed, the access function is dynamic, if you pass $parameters as a string, you will get just one
-parameter, if you pass an array, you get all of the keys present in the array.
             
 # Upcoming
-* Slot support. You can pass props when attempting to render the template, but with slots, you can also pass markup along side it and slot it in dedicated spots in your component.
+* Open for suggestions!
 
 
 

@@ -22,14 +22,6 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->arrayNode('templating')
-                    ->prototype('scalar')->end()
-                    ->defaultValue(['render_function' => 'component', 'access_function' => 'access'])
-                    ->children()
-                        ->variableNode('access_function')->end()
-                        ->variableNode('render_function')->end()
-                    ->end()
-                ->end() // templating
             ->variableNode('components_directory')->defaultValue('/components')->end()
             ->end()
         ;

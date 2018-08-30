@@ -17,30 +17,12 @@ class ConfigStore
     public $componentDirectory;
 
     /**
-     * @var string
-     */
-    public $renderFunction;
-
-    /**
-     * @var string
-     */
-    public $accessFunction;
-
-    /**
      * ConfigStore constructor.
      * @param $componentDirectory
-     * @param $renderFunction
-     * @param $accessFunction
      */
-    public function __construct(
-        $componentDirectory,
-        $renderFunction,
-        $accessFunction
-    )
+    public function __construct($componentDirectory)
     {
         $this->componentDirectory = $componentDirectory;
-        $this->renderFunction = $renderFunction;
-        $this->accessFunction = $accessFunction;
     }
 
     /**

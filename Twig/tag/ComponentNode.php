@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Twig\tags\component;
+namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
 /**
  * Class SlotNode
@@ -9,14 +9,18 @@ namespace Olveneer\TwigComponentsBundle\Twig\tags\component;
 class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 {
 
-    public function __construct(\Twig_Node_Expression $expr, \Twig_Node_Expression $variables = null, $only = false, $ignoreMissing = false, $lineno, $tag = null)
+    private $supplied;
+
+    public function __construct(\Twig_Node_Expression $expr, \Twig_Node_Expression $variables = null, $lineno, $supplied, $tag = null)
     {
         $nodes = array('expr' => $expr);
         if (null !== $variables) {
             $nodes['variables'] = $variables;
         }
 
-        parent::__construct($nodes, array('only' => (bool)$only, 'ignore_missing' => (bool)$ignoreMissing), $lineno, $tag);
+        $this->supplied = $supplied;
+
+        parent::__construct($nodes, [], $lineno, $tag);
     }
 
     /**
@@ -26,30 +30,13 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
     {
         $compiler->addDebugInfo($this);
 
-        if ($this->getAttribute('ignore_missing')) {
-            $compiler
-                ->write("try {\n")
-                ->indent();
-        }
-
         $this->addGetTemplate($compiler);
-
-        if ($this->getAttribute('ignore_missing')) {
-            $compiler
-                ->outdent()
-                ->write("} catch (Twig_Error_Loader \$e) {\n")
-                ->indent()
-                ->write("// ignore missing template\n")
-                ->outdent()
-                ->write("}\n\n");
-        }
-
     }
 
     protected function addGetTemplate(\Twig_Compiler $compiler)
     {
         $componentName = $this->getNode('expr')->getAttribute('value');
-        
+
         $compiler->write('$props = ');
 
         if ($this->hasNode('variables')) {
@@ -61,14 +48,24 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $compiler->write(';')
             ->raw(PHP_EOL);;
 
+        $compiler
+            ->raw('$renderer = $this->extensions[')
+            ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
+            ->write(']->getRenderer();')->raw("\n");
+
 
         $compiler
-            ->raw('echo $this->extensions[')
-            ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
-            ->write(']->getKernel()->renderComponent(')
+            ->write('$renderer->openSlots(\''  .  json_encode($this->supplied) . '\'); ')->raw("\n");
+
+        $compiler
+            ->raw('echo ')
+            ->write('$renderer->renderComponent(')
             ->string($componentName)
             ->write(', $props')
-            ->raw("); \n");
+            ->raw("); ")->raw("\n");
+
+        $compiler
+            ->write('$renderer->closeSlots(); ')->raw("\n");
     }
 
 

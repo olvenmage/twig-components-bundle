@@ -2,11 +2,9 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig;
 
-use Olveneer\TwigComponentsBundle\Service\TwigComponentKernel;
-use Olveneer\TwigComponentsBundle\Twig\tags\component\ComponentParser;
-use Olveneer\TwigComponentsBundle\Twig\tags\slot\SlotTokenParser;
-use Olveneer\TwigComponentsBundle\Twig\tags\slot\SlotNodeVisitor;
-use Twig\TwigFunction;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
+use Olveneer\TwigComponentsBundle\Twig\tag\ComponentParser;
+use Olveneer\TwigComponentsBundle\Twig\tag\CollectParser;
 
 /**
  * Class SlotExtension
@@ -15,19 +13,17 @@ use Twig\TwigFunction;
 class SlotExtension extends \Twig_Extension
 {
     /**
-     * @var TwigComponentKernel
+     * @var ComponentRenderer
      */
-    private $kernel;
+    private $renderer;
 
     /**
      * TwigComponentExtension constructor.
-     * @param TwigComponentKernel $twigComponentKernel
-     * @param string $renderFunction
-     * @param string $accessFunction
+     * @param ComponentRenderer $componentRenderer
      */
-    public function __construct(TwigComponentKernel $twigComponentKernel)
+    public function __construct(ComponentRenderer $componentRenderer)
     {
-        $this->kernel = $twigComponentKernel;
+        $this->renderer = $componentRenderer;
     }
 
     /**
@@ -35,28 +31,15 @@ class SlotExtension extends \Twig_Extension
      */
     public function getTokenParsers()
     {
-        return [new SlotTokenParser(), new ComponentParser()];
+        return [new ComponentParser(), new CollectParser()];
     }
 
     /**
-     * @return string
+     * @return ComponentRenderer
      */
-    public function getName()
+    public function getRenderer()
     {
-        return 'slot';
-    }
-
-    /**
-     * @return array|\Twig_NodeVisitorInterface[]
-     */
-    public function getNodeVisitors()
-    {
-        return [new SlotNodeVisitor()];
-    }
-
-    public function getKernel()
-    {
-        return $this->kernel;
+        return $this->renderer;
     }
 
 }
