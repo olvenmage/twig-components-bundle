@@ -9,16 +9,27 @@ namespace Olveneer\TwigComponentsBundle\Twig\tag;
 class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 {
 
-    private $supplied;
+    /**
+     * @var array
+     */
+    private $inserted;
 
-    public function __construct(\Twig_Node_Expression $expr, \Twig_Node_Expression $variables = null, $lineno, $supplied, $tag = null)
+    /**
+     * ComponentNode constructor.
+     * @param \Twig_Node_Expression $expr
+     * @param \Twig_Node_Expression|null $variables
+     * @param $lineno
+     * @param $inserted
+     * @param null $tag
+     */
+    public function __construct(\Twig_Node_Expression $expr, \Twig_Node_Expression $variables = null, $lineno, $inserted, $tag = null)
     {
         $nodes = array('expr' => $expr);
         if (null !== $variables) {
             $nodes['variables'] = $variables;
         }
 
-        $this->supplied = $supplied;
+        $this->inserted = $inserted;
 
         parent::__construct($nodes, [], $lineno, $tag);
     }
@@ -33,6 +44,9 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $this->addGetTemplate($compiler);
     }
 
+    /**
+     * @param \Twig_Compiler $compiler
+     */
     protected function addGetTemplate(\Twig_Compiler $compiler)
     {
         $componentName = $this->getNode('expr')->getAttribute('value');
@@ -55,7 +69,7 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
 
         $compiler
-            ->write('$renderer->openSlots("'.$componentName.'", \''  .  json_encode($this->supplied) . '\'); ')->raw("\n");
+            ->write('$renderer->openSlots("'.$componentName.'", \''  .  json_encode($this->inserted) . '\'); ')->raw("\n");
 
         $compiler
             ->raw('echo ')
@@ -67,6 +81,4 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $compiler
             ->write('$renderer->closeSlots(); ')->raw("\n");
     }
-
-
 }

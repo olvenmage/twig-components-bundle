@@ -22,9 +22,9 @@ class ComponentParser extends \Twig_TokenParser
     {
         $expr = $this->parser->getExpressionParser()->parseExpression();
 
-        list($variables, $supplied) = $this->parseArguments();
+        list($variables, $inserted) = $this->parseArguments();
 
-        return new ComponentNode($expr, $variables, $token->getLine(), $supplied, $this->getTag());
+        return new ComponentNode($expr, $variables, $token->getLine(), $inserted, $this->getTag());
     }
 
     /**
@@ -44,21 +44,21 @@ class ComponentParser extends \Twig_TokenParser
 
         $body = $this->parser->subparse(array($this, 'decideComponentFork'));
 
-        $supplied = [];
+        $inserted = [];
         $end = false;
         while (!$end) {
             switch ($stream->next()->getValue()) {
-                case 'supply':
+                case 'insert':
                     $name = $stream->getCurrent()->getValue();
                     $stream->expect(\Twig_Token::STRING_TYPE);
 
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
                     $htmlNode = $this->parser->subparse(array($this, 'decideComponentFork'));
 
-                    $supplied[$name] = $htmlNode->getAttribute('data');
+                    $inserted[$name] = $htmlNode->getAttribute('data');
                     break;
 
-                case 'endsupply':
+                case 'endinsert':
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
                     $body = $this->parser->subparse(array($this, 'decideComponentFork'));
                     break;
@@ -74,7 +74,7 @@ class ComponentParser extends \Twig_TokenParser
 
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 
-        return [$variables, $supplied];
+        return [$variables, $inserted];
     }
 
     /**
@@ -107,6 +107,6 @@ class ComponentParser extends \Twig_TokenParser
      */
     public function decideComponentFork(\Twig_Token $token)
     {
-        return $token->test(['supply', 'endsupply', $this->endTag]);
+        return $token->test(['insert', 'endinsert', $this->endTag]);
     }
 }

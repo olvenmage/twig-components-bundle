@@ -154,28 +154,28 @@ Now we want to use this card component in one of our templates:
     
     <body>
         {% get 'card' %}
-            {% supply 'header' %}
+            {% insert 'header' %}
                 <div> My own html! </div>
-            {% endsupply %}
+            {% endinsert %}
         {% endget %}
     </body>
     
 So this will result in the rendering of the mainComponent where the header slot will be filled in
 with `<div> My own html! </div>` and the body defaulting to `<h1> default body value </h1>`.
 
-We can of course also supply our body if we want to like this:
+We can of course also insert our body if we want to like this:
 
     // index.html.twig
     
     <body>
         {% get 'card' %}
-            {% supply 'header' %}
+            {% insert 'header' %}
                 <div> My own html! </div>
-            {% endsupply %}
+            {% endinsert %}
             
-            {% supply 'body' %}
+            {% insert 'body' %}
                 <div> A cool body </div>
-            {% endsupply %}
+            {% endinsert %}
         {% endget %}
     </body>
     
