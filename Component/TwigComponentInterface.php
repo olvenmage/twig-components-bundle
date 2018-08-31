@@ -119,4 +119,9 @@ interface TwigComponentInterface
      * @return string
      */
     public function renderComponent(array $props = []);
+
+    /**
+     * @return array
+     */
+    public function importMixins();
 }

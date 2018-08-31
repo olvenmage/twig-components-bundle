@@ -26,11 +26,16 @@ class ComponentPass implements CompilerPassInterface
 
         $renderer = $container->findDefinition(ComponentRenderer::class);
 
-        
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {
             $renderer->addMethodCall('register', [new Reference($id)]);
+        }
+
+        $taggedServices = $container->findTaggedServiceIds('olveneer.mixin');
+
+        foreach ($taggedServices as $id => $tags) {
+            $renderer->addMethodCall('registerMixin', [new Reference($id)]);
         }
     }
 }

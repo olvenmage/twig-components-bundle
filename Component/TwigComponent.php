@@ -194,4 +194,12 @@ class TwigComponent implements TwigComponentInterface
     {
         return $this->renderer->render($this->getName(), $props);
     }
+
+    /**
+     * @return string[]
+     */
+    public function importMixins()
+    {
+        return [];
+    }
 }
