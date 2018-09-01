@@ -220,7 +220,7 @@ class ComponentRenderer
     {
         $resolver = new SlotsResolver();
 
-        $component = $this->getComponent($componentName);
+        $component = $this->store->get($componentName);
 
         $component->configureSlots($resolver);
 

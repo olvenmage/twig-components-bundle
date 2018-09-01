@@ -45,7 +45,7 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $nodes = $params->nodes;
 
         $name = $nodes[1]->getAttribute('value');
-        $html = $nodes[0]->getAttribute('data');
+        $html = $nodes[0]->compile($compiler);
 
         $compiler->write('$exposed = [];')->raw(PHP_EOL);
 
