@@ -211,7 +211,7 @@ class ComponentRenderer
     }
 
     /**
-     * @param $componentName
+     * @param $componentNam
      * @param $slots
      * @throws ElementMismatchException
      * @throws MissingSlotException
