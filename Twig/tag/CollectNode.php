@@ -76,7 +76,8 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
                 ->write('$nodes = $renderer->getSlot(')
                 ->string($name)
                 ->raw(');')->raw(PHP_EOL)
-                ->write('$nodes->compile($compiler);  eval($compiler->getSource()); $context = $oldContext;')
+                ->write('$nodes->compile($compiler);')->raw(PHP_EOL)
+                ->write('eval($compiler->getSource());')->raw(PHP_EOL)
             ->outdent()
             ->write('} else {')->raw(PHP_EOL)
             ->indent()
@@ -85,6 +86,7 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
                 ->raw(';')->raw(PHP_EOL)
                 ->write('echo $html;')->raw(PHP_EOL)
             ->outdent()
-            ->raw('}')->raw(PHP_EOL);
+            ->raw('}')->raw(PHP_EOL)
+            ->write('$context = $oldContext;')->raw(PHP_EOL);
     }
 }
