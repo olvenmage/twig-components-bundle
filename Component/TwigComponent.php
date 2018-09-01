@@ -196,7 +196,9 @@ class TwigComponent implements TwigComponentInterface
     }
 
     /**
-     * @return string[]
+     * Returns an array containing references to the desired mixins.
+     *
+     * @return array
      */
     public function importMixins()
     {

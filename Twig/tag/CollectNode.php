@@ -1,6 +1,8 @@
 <?php
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
+use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
 
 /**
  * Class CollectNode
@@ -24,15 +26,20 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
      */
     public function compile(\Twig_Compiler $compiler)
     {
+
         $params = $this->getNode('params');
 
         $compiler
             ->addDebugInfo($this);
 
-        $compiler
-            ->raw('$renderer = $this->extensions[')
+        $compiler->write('$extension = $this->extensions[')
             ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
-            ->write(']->getRenderer();')->raw("\n");
+            ->raw('];')->raw(PHP_EOL);
+
+        $compiler
+            ->write('$renderer = $extension->getRenderer(); ')->raw(PHP_EOL)
+            ->write('$compiler = $extension->createCompiler(); ')->raw(PHP_EOL);
+
 
         /** @var \Twig_Node[] $nodes */
         $nodes = $params->nodes;
@@ -40,10 +47,44 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $name = $nodes[1]->getAttribute('value');
         $html = $nodes[0]->getAttribute('data');
 
-        $compiler->write('$isSlotted = $renderer->hasSlot("' . $name. '"); ')
-            ->raw("\n")
-            ->write('if ($isSlotted) { $html = $renderer->getSlot("' . $name . '"); } else { $html = "' . $html . '"; } ')
-            ->raw("\n ")
-            ->write('echo $html;');
+        $compiler->write('$exposed = [];')->raw(PHP_EOL);
+
+        if (isset($nodes[2])) {
+            $exposes = $nodes[2]->getAttribute('name');
+            if ($exposes === 'exposes') {
+                if (isset($nodes[3]) && $nodes[3] instanceof  \Twig_Node_Expression_Array) {
+                    $compiler
+                        ->write('$exposed = ')
+                        ->subcompile($nodes[3])->raw(';')->raw(PHP_EOL);
+                }
+            }
+        }
+
+        $compiler->write('$oldContext = $context; ')->raw(PHP_EOL)
+            ->write('$parentContext = $renderer->getContext();')->raw(PHP_EOL)
+            ->write('$context = array_merge($parentContext, $exposed);')->raw(PHP_EOL);
+
+        $compiler
+            ->write('$isSlotted = $renderer->hasSlot(')
+            ->string($name)
+            ->raw(');')
+            ->raw(PHP_EOL);
+
+        $compiler
+            ->write('if ($isSlotted) {')->raw(PHP_EOL)
+            ->indent()
+                ->write('$nodes = $renderer->getSlot(')
+                ->string($name)
+                ->raw(');')->raw(PHP_EOL)
+                ->write('$nodes->compile($compiler);  eval($compiler->getSource()); $context = $oldContext;')
+            ->outdent()
+            ->write('} else {')->raw(PHP_EOL)
+            ->indent()
+                ->write('$html = ')
+                ->string($html)
+                ->raw(';')->raw(PHP_EOL)
+                ->write('echo $html;')->raw(PHP_EOL)
+            ->outdent()
+            ->raw('}')->raw(PHP_EOL);
     }
 }

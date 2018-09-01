@@ -19,7 +19,7 @@ services:
 
     olveneer.component_renderer:
         class: Olveneer\TwigComponentsBundle\Service\ComponentRenderer
-        arguments: ['@olveneer.component_store', '@twig', '@olveneer.config_store',  '@request_stack']
+        arguments: ['@olveneer.component_store', '@twig', '@olveneer.config_store']
         lazy: true
 
     Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension: '@olveneer.component_extension'

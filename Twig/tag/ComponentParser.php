@@ -1,6 +1,7 @@
 <?php
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
+use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 
 /**
  * Class SlotTokenParser
@@ -36,6 +37,7 @@ class ComponentParser extends \Twig_TokenParser
         $stream = $this->parser->getStream();
 
         $variables = null;
+
         if ($stream->nextIf(/* Twig_Token::NAME_TYPE */ 5, 'with')) {
             $variables = $this->parser->getExpressionParser()->parseExpression();
         }
@@ -53,9 +55,9 @@ class ComponentParser extends \Twig_TokenParser
                     $stream->expect(\Twig_Token::STRING_TYPE);
 
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
-                    $htmlNode = $this->parser->subparse(array($this, 'decideComponentFork'));
+                    $slotNodes = $this->parser->subparse(array($this, 'decideComponentFork'));
 
-                    $inserted[$name] = $htmlNode->getAttribute('data');
+                    $inserted[$name] = $slotNodes;
                     break;
 
                 case 'endinsert':

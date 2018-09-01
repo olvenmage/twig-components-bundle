@@ -179,7 +179,98 @@ We can of course also insert our body if we want to like this:
         {% endget %}
     </body>
     
+Not only can you pass your values from the insert to the collect, you can also `expose` certain variables. Here is an example:
+
+    // parent.html.twig
+    {% for item in items %}
+        ...
+    {% endfor %}
     
+    {% collect 'body' exposes { products: items, hello: 'Hi!!!' } %} {% endcollect %}
+    
+    //child.html.twig
+    {% get 'parent' %}
+        {% insert 'body' %}
+            <div> ... </div>
+            <h1> {{ hello }} </h1>
+            
+            {% for product in products %}
+                ...
+            {% endfor %}
+        {% endinsert  %}
+    {% endget %}
+    
+As you can see, the variables you expose on the collect can be used in the {% insert %} tags. Note,
+the variables you expose `only` exist inbetween those tags!
+
+**Mixins**
+
+Sometimes you have certain props or parameters that you like to use in most of your components. And to 
+prevent duplicate code, you can use mixins like this:
+
+
+    // SomeComponent.php
+    
+    public funciton getParameters()
+    {
+        ...
+    }
+    
+    public function importMixins()
+    {
+        return [SomeMixin::class];
+    }
+    
+As you can see, usage is incredibly easy. Now take a look at a mixin:
+
+
+    // SomeMixin.php
+    class SomeMixin extends TwigComponentMixin
+    {
+    
+        /**
+         * @return array
+         *
+         * Merges with the parameters.
+         */
+        public function getParameters()
+        {
+            return [];
+        }
+    
+        /**
+         * @return array
+         *
+         * Merges with the props.
+         */
+        public function getProps()
+        {
+            return [];
+        }
+    
+        /**
+         * @return int
+         *
+         * The execution order of all the mixins. Mixins with the same key override the earlier ones.
+         * Lower goes first.
+         */
+        public function getPriority()
+        {
+            return 0;
+        }
+    }
+    
+A mixin is just another service, so inside of here you can inject and use whatever you like. When a mixin
+is parsed, the parameters its return will be merged with the component's using `array_merge`.
+
+The mixin has to be registered in your `services.yaml` with the `olveneer.mixin` tag. You can however use
+the same trick earlier for mixins as well,Jjust add this to your services.yaml:
+
+        App\Mixin\:
+                  resource: '../src/Mixin'
+                  tags: ['olveneer.mixin']
+Now every mixin you define in the App\Mixin folder will be automatically registered as a mixin, neat!
+
 **Best Practices**
 
 A couple of best practices for the best long-term update support and overall code optimization.

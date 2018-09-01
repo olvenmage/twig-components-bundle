@@ -34,17 +34,12 @@ class ComponentRenderer
     /**
      * @var array
      */
-    private $slotStore = [];
+    private $mixinStore;
 
     /**
      * @var array
      */
-    private $mixinStore = [];
-
-    /**
-     * @var RequestStack
-     */
-    private $requestStack;
+    private $target;
 
     /**
      * ComponentRenderer constructor.
@@ -53,12 +48,14 @@ class ComponentRenderer
      * @param ConfigStore $configStore
      * @param RequestStack $requestStack
      */
-    public function __construct(ComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore, RequestStack $requestStack)
+    public function __construct(ComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore)
     {
         $this->store = $componentStore;
         $this->environment = $environment;
         $this->componentDirectory = $configStore->componentDirectory;
-        $this->requestStack = $requestStack;
+
+        $this->target = ['slots' => [], 'context' => []];
+        $this->mixinStore = [];
     }
 
     /**
@@ -78,7 +75,7 @@ class ComponentRenderer
             $component = $this->getComponent($name, $props);
 
             if (!($component instanceof TwigComponentInterface)) {
-               $this->throwException($name);
+                $this->throwException($name);
             }
         } else {
             $component = $name;
@@ -167,18 +164,9 @@ class ComponentRenderer
     }
 
     /**
-     * @param $mixin
-     */
-    public function registerMixin($mixin)
-    {
-        $this->mixinStore[get_class($mixin)] = $mixin;
-    }
-
-    /**
      * @param $name
      * @param array $props
      * @return null|TwigComponentInterface
-     * @throws \Exception
      */
     public function getComponent($name, array &$props = [])
     {
@@ -215,7 +203,18 @@ class ComponentRenderer
     }
 
     /**
+     * @param $mixin
+     */
+    public function registerMixin($mixin)
+    {
+        $this->mixinStore[get_class($mixin)] = $mixin;
+    }
+
+    /**
+     * @param $componentName
      * @param $slots
+     * @throws ElementMismatchException
+     * @throws MissingSlotException
      */
     public function openSlots($componentName, $slots)
     {
@@ -225,19 +224,20 @@ class ComponentRenderer
 
         $component->configureSlots($resolver);
 
-        $slots = json_decode($slots, true);
+        $slots = unserialize($slots);
 
         $resolver->configure($slots);
 
-       $this->slotStore = $slots;
+        $this->target['slots'] = $slots;
     }
 
     /**
      * @return mixed
      */
-    public function closeSlots()
+    public function closeTarget()
     {
-        $this->slotStore = [];
+        $this->target['slots'] = [];
+        $this->target['context'] = [];
     }
 
     /**
@@ -246,7 +246,7 @@ class ComponentRenderer
      */
     public function getSlot($name)
     {
-        return $this->slotStore[$name];
+        return $this->target['slots'][$name];
     }
 
     /**
@@ -255,7 +255,30 @@ class ComponentRenderer
      */
     public function hasSlot($name)
     {
-        return isset($this->slotStore[$name]);
+        return isset($this->target['slots'][$name]);
+    }
 
+    /**
+     * @return \Twig_Environment
+     */
+    public function getEnv()
+    {
+        return $this->environment;
+    }
+
+    /**
+     * @param $context
+     */
+    public function openContext($context)
+    {
+        $this->target['context'] = $context;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getContext()
+    {
+      return $this->target['context'];
     }
 }

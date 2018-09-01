@@ -42,4 +42,12 @@ class SlotExtension extends \Twig_Extension
         return $this->renderer;
     }
 
+    /**
+     * @return \Twig_Compiler
+     */
+    public function createCompiler()
+    {
+        return new \Twig_Compiler($this->renderer->getEnv());
+    }
+
 }

@@ -2,6 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Component;
 
+use Olveneer\TwigComponentsBundle\Service\SlotsResolver;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,6 +37,14 @@ interface TwigComponentInterface
      * @return void|bool
      */
     public function configureProps(OptionsResolver $resolver);
+
+    /**
+     * Validates the slot content
+     *
+     * @param SlotsResolver $resolver
+     * @return mixed
+     */
+    public function configureSlots(SlotsResolver $resolver);
 
     /**
      * Returns the template file name for the component.
@@ -121,6 +130,8 @@ interface TwigComponentInterface
     public function renderComponent(array $props = []);
 
     /**
+     * Returns an array containing references to the desired mixins.
+     *
      * @return array
      */
     public function importMixins();

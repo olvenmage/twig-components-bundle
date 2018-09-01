@@ -23,6 +23,9 @@ class SlotsResolver
     public function configure($slots)
     {
 
+        return;
+
+
         foreach ($this->requiredSlots as $slotName) {
             if (!isset($slots[$slotName])) {
                 throw new MissingSlotException("the slot $slotName is required but is never supplied.");

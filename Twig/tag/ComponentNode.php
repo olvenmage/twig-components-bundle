@@ -8,7 +8,6 @@ namespace Olveneer\TwigComponentsBundle\Twig\tag;
  */
 class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 {
-
     /**
      * @var array
      */
@@ -41,14 +40,6 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
     {
         $compiler->addDebugInfo($this);
 
-        $this->addGetTemplate($compiler);
-    }
-
-    /**
-     * @param \Twig_Compiler $compiler
-     */
-    protected function addGetTemplate(\Twig_Compiler $compiler)
-    {
         $componentName = $this->getNode('expr')->getAttribute('value');
 
         $compiler->write('$props = ');
@@ -67,9 +58,10 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
             ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
             ->write(']->getRenderer();')->raw("\n");
 
+        $compiler->write('$renderer->openContext($context);')->raw(PHP_EOL);
 
         $compiler
-            ->write('$renderer->openSlots("'.$componentName.'", \''  .  json_encode($this->inserted) . '\'); ')->raw("\n");
+            ->write('$renderer->openSlots("'.$componentName.'", \''  .  serialize($this->inserted)  . '\'); ')->raw("\n");
 
         $compiler
             ->raw('echo ')
@@ -79,6 +71,6 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
             ->raw("); ")->raw("\n");
 
         $compiler
-            ->write('$renderer->closeSlots(); ')->raw("\n");
+            ->write('$renderer->closeTarget(); ')->raw("\n");
     }
 }
