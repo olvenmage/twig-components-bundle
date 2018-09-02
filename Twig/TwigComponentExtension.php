@@ -36,6 +36,43 @@ class TwigComponentExtension extends BaseTwigExtension
     }
 
     /**
+     * Access a component's parameters.
+     *
+     * @deprecated Use slots with the exposing of parameters instead, or, directly inject them or use a Mixin.
+     *  Will be removed later.
+     *
+     * @param $name
+     * @param $requestedParameters
+     * @param array $props
+     * @return array|null
+     */
+    public function access($name, $requestedParameters, $props = [])
+    {
+        $component = $this->renderer->getComponent($name, $props);
+        $parameters = $component->getParameters($props);
+
+        $getParameter = function ($parameter) use ($parameters) {
+            if (isset($parameters[$parameter])) {
+                return $parameters[$parameter];
+            } else {
+                return null;
+            }
+        };
+
+        if (gettype($requestedParameters) == 'array') {
+            $fetchedParameters = [];
+
+            foreach ($requestedParameters as $parameter) {
+                $fetchedParameters[$parameter] = $getParameter($parameter);
+            }
+
+            return $fetchedParameters;
+        } else {
+            return $getParameter($requestedParameters);
+        }
+    }
+
+    /**
      * @return array|\Twig_Function[]
      */
     public function getFunctions()
@@ -43,31 +80,7 @@ class TwigComponentExtension extends BaseTwigExtension
         return [
 
             /** Returns one or more parameters from a component */
-            new TwigFunction('access', function ($name, $requestedParameters, $props = []) {
-
-                $component = $this->renderer->getComponent($name, $props);
-                $parameters = $component->getParameters($props);
-
-                $getParameter = function ($parameter) use ($parameters) {
-                    if (isset($parameters[$parameter])) {
-                        return $parameters[$parameter];
-                    } else {
-                        return null;
-                    }
-                };
-
-                if (gettype($requestedParameters) == 'array') {
-                    $fetchedParameters = [];
-
-                    foreach ($requestedParameters as $parameter) {
-                        $fetchedParameters[$parameter] = $getParameter($parameter);
-                    }
-
-                    return $fetchedParameters;
-                } else {
-                    return $getParameter($requestedParameters);
-                }
-            }, ['is_safe' => ['html', 'deprecated' => true]])
+            new TwigFunction('access', [$this, 'access'], ['is_safe' => ['html'], 'deprecated' => true])
 
         ];
     }

@@ -186,7 +186,7 @@ Not only can you pass your values from the insert to the collect, you can also `
         ...
     {% endfor %}
     
-    {% collect 'body' exposes { products: items, hello: 'Hi!!!' } %} {% endcollect %}
+    {% collect 'body' expose { products: items, hello: 'Hi!!!' } %} {% endcollect %}
     
     //child.html.twig
     {% get 'parent' %}

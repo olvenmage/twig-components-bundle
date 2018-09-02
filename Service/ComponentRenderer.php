@@ -7,7 +7,6 @@ use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentMixin;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Twig_Node;
 
 /**
  * Class ComponentRenderer
@@ -212,7 +211,6 @@ class ComponentRenderer
     /**
      * @param $componentName
      * @param $slots
-     * @param $context
      * @throws ElementMismatchException
      * @throws MissingSlotException
      */
@@ -267,15 +265,15 @@ class ComponentRenderer
     }
 
     /**
-     * @return Twig_Node
+     * @return \Twig_Node
      */
     public function getDefaultNodes()
     {
-        return $this->target['default'];
+        return unserialize($this->target['default']);
     }
 
     /**
-     * @param Twig_Node $defaultNodes
+     * @param string $defaultNodes
      */
     public function setDefaultNodes($defaultNodes)
     {

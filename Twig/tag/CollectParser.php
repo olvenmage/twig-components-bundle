@@ -1,6 +1,7 @@
 <?php
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
+
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
 

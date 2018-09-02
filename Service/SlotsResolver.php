@@ -2,6 +2,10 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
+/**
+ * Class SlotsResolver
+ * @package Olveneer\TwigComponentsBundle\Service
+ */
 class SlotsResolver
 {
 
@@ -128,7 +132,7 @@ class SlotsResolver
     /**
      * @param array $slots
      */
-    public function requireSlots($slots = [])
+    public function setRequired($slots = [])
     {
         $this->requiredSlots = $slots;
     }

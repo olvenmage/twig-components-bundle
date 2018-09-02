@@ -41,5 +41,4 @@ class TwigComponentMixin
     {
         return 0;
     }
-
 }

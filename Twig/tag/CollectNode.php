@@ -1,6 +1,7 @@
 <?php
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
+
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
 
@@ -46,13 +47,13 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
         $name = $nodes[1]->getAttribute('value');
 
-        $compiler->write('$renderer->setDefaultNodes(unserialize(\''. serialize($nodes[0]) .'\'));')->raw(PHP_EOL);
+        $compiler->write('$renderer->setDefaultNodes(\''. serialize($nodes[0]) .'\');')->raw(PHP_EOL);
 
         $compiler->write('$exposed = [];')->raw(PHP_EOL);
 
         if (isset($nodes[2])) {
             $exposes = $nodes[2]->getAttribute('name');
-            if ($exposes === 'exposes') {
+            if ($exposes === 'expose') {
                 if (isset($nodes[3]) && $nodes[3] instanceof  \Twig_Node_Expression_Array) {
                     $compiler
                         ->write('$exposed = ')

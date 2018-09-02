@@ -2,7 +2,10 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
-
+/**
+ * Class SlotValidatorNode
+ * @package Olveneer\TwigComponentsBundle\Service
+ */
 class SlotValidatorNode
 {
     /**
