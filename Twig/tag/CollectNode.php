@@ -45,7 +45,8 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $nodes = $params->nodes;
 
         $name = $nodes[1]->getAttribute('value');
-        $html = $nodes[0]->compile($compiler);
+
+        $compiler->write('$renderer->setDefaultNodes(unserialize(\''. serialize($nodes[0]) .'\'));')->raw(PHP_EOL);
 
         $compiler->write('$exposed = [];')->raw(PHP_EOL);
 
@@ -61,8 +62,7 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
         }
 
         $compiler->write('$oldContext = $context; ')->raw(PHP_EOL)
-            ->write('$parentContext = $renderer->getContext();')->raw(PHP_EOL)
-            ->write('$context = array_merge($parentContext, $exposed);')->raw(PHP_EOL);
+            ->write('$context = array_merge($context, $exposed);')->raw(PHP_EOL);
 
         $compiler
             ->write('$isSlotted = $renderer->hasSlot(')
@@ -76,17 +76,14 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
                 ->write('$nodes = $renderer->getSlot(')
                 ->string($name)
                 ->raw(');')->raw(PHP_EOL)
-                ->write('$nodes->compile($compiler);')->raw(PHP_EOL)
-                ->write('eval($compiler->getSource());')->raw(PHP_EOL)
             ->outdent()
             ->write('} else {')->raw(PHP_EOL)
             ->indent()
-                ->write('$html = ')
-                ->string($html)
-                ->raw(';')->raw(PHP_EOL)
-                ->write('echo $html;')->raw(PHP_EOL)
+                ->write('$nodes = $renderer->getDefaultNodes();')->raw(PHP_EOL)
             ->outdent()
             ->raw('}')->raw(PHP_EOL)
+            ->write('$nodes->compile($compiler);')->raw(PHP_EOL)
+            ->write('eval($compiler->getSource());')->raw(PHP_EOL)
             ->write('$context = $oldContext;')->raw(PHP_EOL);
     }
 }

@@ -5,9 +5,9 @@ namespace Olveneer\TwigComponentsBundle\Service;
 use Olveneer\TwigComponentsBundle\Component\TwigComponent;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentMixin;
-use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig_Node;
 
 /**
  * Class ComponentRenderer
@@ -46,7 +46,6 @@ class ComponentRenderer
      * @param ComponentStore $componentStore
      * @param \Twig_Environment $environment
      * @param ConfigStore $configStore
-     * @param RequestStack $requestStack
      */
     public function __construct(ComponentStore $componentStore, \Twig_Environment $environment, ConfigStore $configStore)
     {
@@ -54,7 +53,7 @@ class ComponentRenderer
         $this->environment = $environment;
         $this->componentDirectory = $configStore->componentDirectory;
 
-        $this->target = ['slots' => [], 'context' => []];
+        $this->target = ['slots' => [], 'default' => []];
         $this->mixinStore = [];
     }
 
@@ -211,12 +210,13 @@ class ComponentRenderer
     }
 
     /**
-     * @param $componentNam
+     * @param $componentName
      * @param $slots
+     * @param $context
      * @throws ElementMismatchException
      * @throws MissingSlotException
      */
-    public function openSlots($componentName, $slots)
+    public function openTarget($componentName, $slots)
     {
         $resolver = new SlotsResolver();
 
@@ -232,12 +232,12 @@ class ComponentRenderer
     }
 
     /**
-     * @return mixed
+     * @return void
      */
     public function closeTarget()
     {
         $this->target['slots'] = [];
-        $this->target['context'] = [];
+        $this->target['default'] = [];
     }
 
     /**
@@ -267,18 +267,18 @@ class ComponentRenderer
     }
 
     /**
-     * @param $context
+     * @return Twig_Node
      */
-    public function openContext($context)
+    public function getDefaultNodes()
     {
-        $this->target['context'] = $context;
+        return $this->target['default'];
     }
 
     /**
-     * @return mixed
+     * @param Twig_Node $defaultNodes
      */
-    public function getContext()
+    public function setDefaultNodes($defaultNodes)
     {
-      return $this->target['context'];
+        $this->target['default'] = $defaultNodes;
     }
 }
