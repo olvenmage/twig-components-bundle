@@ -1,6 +1,12 @@
 # twig-components-bundle
 A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.
 
+# About
+I am a long-time vue developer, but recently I've kinda jumped onto back-end programming instead as my favourite. Problem is, I was using twig and I really missed the component structure vue offered, sure you had blocks and all, but those were still lacking and didn't provide as much individuality, more so templates to extend.
+
+So I made this bundle to get that functionality back and I think it works out perfectly. And suggestions or feedback is always welcome!
+olvenmage@live.nl
+
 # Installation
      composer require olveneer/twig-components-bundle
      
