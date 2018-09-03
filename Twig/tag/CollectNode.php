@@ -2,10 +2,6 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
-use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
-use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
-use Twig\Error\SyntaxError;
-
 /**
  * Class CollectNode
  * @package Olveneer\TwigComponentsBundle\Twig\tag\component
@@ -58,10 +54,10 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
                         ->write('$exposed = ')
                         ->subcompile($nodes[3])->raw(';')->raw(PHP_EOL);
                 } else {
-                    throw new SyntaxError("Expose expects an object{} of values to expose.");
+                    throw new \SyntaxError("Expose expects an object{} of values to expose.");
                 }
             } else {
-                throw new SyntaxError("The collect node expects 'expose', '$exposes' was given instead");
+                throw new \SyntaxError("The collect node expects 'expose', '$exposes' was given instead");
             }
         }
 
