@@ -52,7 +52,7 @@ class ComponentRenderer
         $this->environment = $environment;
         $this->componentDirectory = $configStore->componentDirectory;
 
-        $this->target = ['slots' => [], 'default' => []];
+        $this->target = ['slots' => [], 'context' => []];
         $this->mixinStore = [];
     }
 
@@ -214,7 +214,7 @@ class ComponentRenderer
      * @throws ElementMismatchException
      * @throws MissingSlotException
      */
-    public function openTarget($componentName, $slots)
+    public function openTarget($componentName, $slots, $context)
     {
         $resolver = new SlotsResolver();
 
@@ -227,6 +227,7 @@ class ComponentRenderer
         $resolver->configure($slots);
 
         $this->target['slots'] = $slots;
+        $this->target['context'] = $context;
     }
 
     /**
@@ -235,7 +236,7 @@ class ComponentRenderer
     public function closeTarget()
     {
         $this->target['slots'] = [];
-        $this->target['default'] = [];
+        $this->target['context'] = [];
     }
 
     /**
@@ -264,19 +265,8 @@ class ComponentRenderer
         return $this->environment;
     }
 
-    /**
-     * @return \Twig_Node
-     */
-    public function getDefaultNodes()
+    public function getContext()
     {
-        return unserialize($this->target['default']);
-    }
-
-    /**
-     * @param string $defaultNodes
-     */
-    public function setDefaultNodes($defaultNodes)
-    {
-        $this->target['default'] = $defaultNodes;
+        return $this->target['context'];
     }
 }

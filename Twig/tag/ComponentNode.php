@@ -56,19 +56,26 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $compiler
             ->raw('$renderer = $this->extensions[')
             ->string("Olveneer\TwigComponentsBundle\Twig\SlotExtension")
-            ->write(']->getRenderer();')->raw("\n");
+            ->write(']->getRenderer();')->raw(PHP_EOL);
 
         $compiler
-            ->write('$renderer->openTarget("'.$componentName.'", \''  .  serialize($this->inserted)  . '\'); ')->raw("\n");
+            ->write('$renderer->openTarget(')
+            ->string($componentName)
+            ->raw(',')
+            ->string(serialize($this->inserted))
+            ->raw(', $context')
+            ->raw(');')
+            ->raw(PHP_EOL);
 
         $compiler
             ->raw('echo ')
             ->write('$renderer->renderComponent(')
             ->string($componentName)
-            ->write(', $props')
-            ->raw("); ")->raw("\n");
+            ->raw(', $props')
+            ->raw("); ")
+            ->raw(PHP_EOL);
 
         $compiler
-            ->write('$renderer->closeTarget(); ')->raw("\n");
+            ->write('$renderer->closeTarget(); ')->raw(PHP_EOL);
     }
 }
