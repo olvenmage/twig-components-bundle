@@ -4,6 +4,7 @@ namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
+use Twig\Error\SyntaxError;
 
 /**
  * Class CollectNode
@@ -47,8 +48,6 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
         $name = $nodes[1]->getAttribute('value');
 
-        $compiler->write('$renderer->setDefaultNodes(\''. serialize($nodes[0]) .'\');')->raw(PHP_EOL);
-
         $compiler->write('$exposed = [];')->raw(PHP_EOL);
 
         if (isset($nodes[2])) {
@@ -58,12 +57,17 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
                     $compiler
                         ->write('$exposed = ')
                         ->subcompile($nodes[3])->raw(';')->raw(PHP_EOL);
+                } else {
+                    throw new SyntaxError("Expose expects an object{} of values to expose.");
                 }
+            } else {
+                throw new SyntaxError("The collect node expects 'expose', '$exposes' was given instead");
             }
         }
 
         $compiler->write('$oldContext = $context; ')->raw(PHP_EOL)
-            ->write('$context = array_merge($context, $exposed);')->raw(PHP_EOL);
+            ->write('$parentContext = $renderer->getContext();')->raw(PHP_EOL)
+            ->write('$context = array_merge($parentContext, $exposed);')->raw(PHP_EOL);
 
         $compiler
             ->write('$isSlotted = $renderer->hasSlot(')
@@ -74,17 +78,17 @@ class CollectNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $compiler
             ->write('if ($isSlotted) {')->raw(PHP_EOL)
             ->indent()
-                ->write('$nodes = $renderer->getSlot(')
-                ->string($name)
-                ->raw(');')->raw(PHP_EOL)
+            ->write('$nodes = $renderer->getSlot(')
+            ->string($name)
+            ->raw(');')->raw(PHP_EOL)
+            ->write('$nodes->compile($compiler);')->raw(PHP_EOL)
+            ->write('eval($compiler->getSource());')->raw(PHP_EOL)
             ->outdent()
             ->write('} else {')->raw(PHP_EOL)
             ->indent()
-                ->write('$nodes = $renderer->getDefaultNodes();')->raw(PHP_EOL)
+                ->subCompile($nodes[0])
             ->outdent()
             ->raw('}')->raw(PHP_EOL)
-            ->write('$nodes->compile($compiler);')->raw(PHP_EOL)
-            ->write('eval($compiler->getSource());')->raw(PHP_EOL)
             ->write('$context = $oldContext;')->raw(PHP_EOL);
     }
 }

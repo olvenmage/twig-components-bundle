@@ -1,6 +1,12 @@
 # twig-components-bundle
 A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.
 
+# About
+I am a long-time vue developer, but recently I've kinda jumped onto back-end programming instead as my favourite. Problem is, I was using twig and I really missed the component structure vue offered, sure you had blocks and all, but those were still lacking and didn't provide as much individuality, more so templates to extend.
+
+So I made this bundle to get that functionality back and I think it works out perfectly. And suggestions or feedback is always welcome!
+olvenmage@live.nl
+
 # Installation
      composer require olveneer/twig-components-bundle
      
@@ -41,8 +47,8 @@ This shouldn't be anything new if you've been using symfony for a while.
 
 Let's determine the name of our component: 
 Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how the component's name is determined:
-take the last part of the class name, so in this case, TestComponent. Next, we make it camelcased, so it will be
-'testComponent' (this is also called the `short class name`). If you want a custom name, use: <br>
+take the last part of the class name, so in this case, TestComponent. Next, we make it smake cased, so it will be
+'test_component'. If you want a custom name, use: <br>
 
     /**
      * Returns the string to use as a name for the component.
@@ -51,7 +57,7 @@ take the last part of the class name, so in this case, TestComponent. Next, we m
      */
     public function getName()
     {
-        return 'testComponent';
+        return 'another_name';
     }
 
 Now, these services are not automatically registered as Twig Components, you need to register the service with an extra
@@ -61,17 +67,7 @@ Now, these services are not automatically registered as Twig Components, you nee
             class: App\Component\TestComponent
             tags: ['olveneer.component']
 
-This can of course get quite tedious, so I advice you to use this simple life-hack.
-
-First, create a separate directory from your Service folder for your components (you can see in the above example I
- called mine 'Component'). The reason for this is the following; symfony allows for dynamic service tagging, 
- controllers use it too.
- 
- Just add this to your services.yaml:
- 
-        App\Component\:
-                  resource: '../src/Component'
-                  tags: ['olveneer.component']
+If you use autoconfigure, this happens automatically to any service extending the `TwigComponent` class!
  
  This takes every service from the Component directory and marks it as a Twig Component.
  
@@ -82,7 +78,7 @@ in `templates/components/<component_name>.html.twig`. (You will get an error mes
 
 the `'/components'` part is configurable in the config file, but we will get to that later.
 
-What should the name of the file be? The component name of course! so in our case `testComponent.html.twig`.
+What should the name of the file be? The component name of course! so in our case `test_component.html.twig`.
 
 Inside of here you can access all the parameters you send back.
 
@@ -263,13 +259,8 @@ As you can see, usage is incredibly easy. Now take a look at a mixin:
 A mixin is just another service, so inside of here you can inject and use whatever you like. When a mixin
 is parsed, the parameters its return will be merged with the component's using `array_merge`.
 
-The mixin has to be registered in your `services.yaml` with the `olveneer.mixin` tag. You can however use
-the same trick earlier for mixins as well,Jjust add this to your services.yaml:
-
-        App\Mixin\:
-                  resource: '../src/Mixin'
-                  tags: ['olveneer.mixin']
-Now every mixin you define in the App\Mixin folder will be automatically registered as a mixin, neat!
+The mixin has to be registered in your `services.yaml` with the `olveneer.mixin` tag. 
+If you use autoconfigure, this happens automatically to any service extending the `TwigComponentMixin` class!
 
 **Best Practices**
 
@@ -278,6 +269,8 @@ A couple of best practices for the best long-term update support and overall cod
 * Use the default `getName()` as much as possible (returning the short class name).
 * Use the `configureProps()` method if applicable.
 * Use the earlier stated auto configuring of the components with some specific configuring for edge-cases.
+* Use snake case for custom component names. ex: `some_component_name`
+* Create two seperate folders for your Mixins and Components under /src.
 
 **The config**
 

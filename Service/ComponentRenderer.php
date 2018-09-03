@@ -52,7 +52,7 @@ class ComponentRenderer
         $this->environment = $environment;
         $this->componentDirectory = $configStore->componentDirectory;
 
-        $this->target = ['slots' => [], 'default' => []];
+        $this->target = ['slots' => [], 'context' => []];
         $this->mixinStore = [];
     }
 
@@ -77,6 +77,7 @@ class ComponentRenderer
             }
         } else {
             $component = $name;
+            $name = $component->getName();
         }
 
         /** @var string $imports */
@@ -85,7 +86,11 @@ class ComponentRenderer
         /** @var TwigComponentMixin $imports */
         $imports = [];
 
-        foreach($importReferences as &$import) {
+        foreach ($importReferences as &$import) {
+            if (!isset($this->mixinStore[$import])) {
+                throw new \Exception("The mixin '$import' is not registered as a mixin.");
+            }
+
             $imports[] = $this->mixinStore[$import];
         }
 
@@ -104,26 +109,32 @@ class ComponentRenderer
             return ($a > $b) ? -1 : 1;
         });
 
-        foreach($imports as $import) {
-            $props = array_merge($props, $import->getProps());
+        foreach ($imports as $import) {
+            foreach ($import->getProps() as $key => $prop) {
+                $props[$key] = $prop;
+            }
         }
 
         $parameters = $component->getParameters($props);
         $componentPath = $component->getTemplatePath();
 
-        if (substr($componentPath, 0, 1) === '/') {
-            $prefix = 'templates';
-        } else {
-            $prefix = 'templates/';
-        }
-
         if (!$this->environment->getLoader()->exists($componentPath)) {
-            $errorMsg = "There is no component template found for '$name'.\n Looked for the '$prefix$componentPath' template";
+            if (substr($componentPath, 0, 1) === '/') {
+                $prefix = 'templates';
+            } else {
+                $prefix = 'templates/';
+            }
+
+            $className = get_class($component);
+
+            $errorMsg = "There is no component template found for the '$className' component with the name '$name'.\n Looked for '$prefix$componentPath' but found nothing.";
             throw new TemplateNotFoundException($errorMsg);
         }
 
-        foreach($imports as $import) {
-            $parameters = array_merge($parameters, $import->getParameters());
+        foreach ($imports as $import) {
+            foreach ($import->getParameters() as $key => $parameter) {
+                $parameters[$key] = $parameter;
+            }
         }
 
         return $this->environment->render($componentPath, $parameters);
@@ -214,11 +225,15 @@ class ComponentRenderer
      * @throws ElementMismatchException
      * @throws MissingSlotException
      */
-    public function openTarget($componentName, $slots)
+    public function openTarget($componentName, $slots, $context)
     {
         $resolver = new SlotsResolver();
 
         $component = $this->store->get($componentName);
+
+        if (!$component instanceof TwigComponent) {
+            throw new ComponentNotFoundException("No component with the name $componentName found when using {% get %}");
+        }
 
         $component->configureSlots($resolver);
 
@@ -227,6 +242,7 @@ class ComponentRenderer
         $resolver->configure($slots);
 
         $this->target['slots'] = $slots;
+        $this->target['context'] = $context;
     }
 
     /**
@@ -235,7 +251,7 @@ class ComponentRenderer
     public function closeTarget()
     {
         $this->target['slots'] = [];
-        $this->target['default'] = [];
+        $this->target['context'] = [];
     }
 
     /**
@@ -264,19 +280,8 @@ class ComponentRenderer
         return $this->environment;
     }
 
-    /**
-     * @return \Twig_Node
-     */
-    public function getDefaultNodes()
+    public function getContext()
     {
-        return unserialize($this->target['default']);
-    }
-
-    /**
-     * @param string $defaultNodes
-     */
-    public function setDefaultNodes($defaultNodes)
-    {
-        $this->target['default'] = $defaultNodes;
+        return $this->target['context'];
     }
 }

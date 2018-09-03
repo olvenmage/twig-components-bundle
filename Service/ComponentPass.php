@@ -2,6 +2,7 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
+use Olveneer\TwigComponentsBundle\Component\TwigComponent;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -26,7 +27,9 @@ class ComponentPass implements CompilerPassInterface
 
         $renderer = $container->findDefinition(ComponentRenderer::class);
 
-        
+
+
+
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
         foreach ($taggedServices as $id => $tags) {

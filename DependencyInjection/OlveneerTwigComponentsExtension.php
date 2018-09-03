@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\DependencyInjection;
 
+use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
+use Olveneer\TwigComponentsBundle\Component\TwigComponentMixin;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -13,7 +15,6 @@ use Symfony\Component\DependencyInjection\Loader;
  */
 class OlveneerTwigComponentsExtension extends Extension
 {
-
     /**
      * Loads a specific configuration.
      *
@@ -33,6 +34,12 @@ class OlveneerTwigComponentsExtension extends Extension
 
         $configDefinition = $container->getDefinition('olveneer.config_store');
         $configDefinition->replaceArgument(0, $config['components_directory']);
+
+        $container->registerForAutoconfiguration(TwigComponentMixin::class)
+            ->addTag('olveneer.mixin');
+
+        $container->registerForAutoconfiguration(TwigComponentInterface::class)
+            ->addTag('olveneer.component');
 
 
     }
