@@ -1,7 +1,6 @@
 <?php
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
-use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 
 /**
  * Class SlotTokenParser
@@ -23,9 +22,9 @@ class ComponentParser extends \Twig_TokenParser
     {
         $expr = $this->parser->getExpressionParser()->parseExpression();
 
-        list($variables, $inserted) = $this->parseArguments();
+        list($variables, $slotted) = $this->parseArguments();
 
-        return new ComponentNode($expr, $variables, $token->getLine(), $inserted, $this->getTag());
+        return new ComponentNode($expr, $variables, $token->getLine(), $slotted, $this->getTag());
     }
 
     /**
@@ -46,21 +45,21 @@ class ComponentParser extends \Twig_TokenParser
 
         $body = $this->parser->subparse(array($this, 'decideComponentFork'));
 
-        $inserted = [];
+        $slotted = [];
         $end = false;
         while (!$end) {
             switch ($stream->next()->getValue()) {
-                case 'insert':
+                case 'slot':
                     $name = $stream->getCurrent()->getValue();
-                    $stream->expect(\Twig_Token::STRING_TYPE);
+                    $stream->expect(\Twig_Token::NAME_TYPE);
 
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
                     $slotNodes = $this->parser->subparse(array($this, 'decideComponentFork'));
 
-                    $inserted[$name] = $slotNodes;
+                    $slotted[$name] = $slotNodes;
                     break;
 
-                case 'endinsert':
+                case 'endslot':
                     $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
                     $body = $this->parser->subparse(array($this, 'decideComponentFork'));
                     break;
@@ -76,7 +75,7 @@ class ComponentParser extends \Twig_TokenParser
 
         $stream->expect(/* Twig_Token::BLOCK_END_TYPE */ 3);
 
-        return [$variables, $inserted];
+        return [$variables, $slotted];
     }
 
     /**
@@ -86,7 +85,6 @@ class ComponentParser extends \Twig_TokenParser
     {
         return 'get';
     }
-
 
     /**
      * Callback called at each tag name when subparsing, must return
@@ -109,6 +107,6 @@ class ComponentParser extends \Twig_TokenParser
      */
     public function decideComponentFork(\Twig_Token $token)
     {
-        return $token->test(['insert', 'endinsert', $this->endTag]);
+        return $token->test(['slot', 'endslot', $this->endTag]);
     }
 }

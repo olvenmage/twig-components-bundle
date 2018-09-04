@@ -1,9 +1,4 @@
 services:
-    olveneer.component_extension:
-        class: Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension
-        arguments: ['@olveneer.component_renderer', '@olveneer.config_store']
-        tags: ['twig.extension']
-
     olveneer.slot_extension:
         class: Olveneer\TwigComponentsBundle\Twig\SlotExtension
         arguments: ['@olveneer.component_renderer']
@@ -22,8 +17,7 @@ services:
         arguments: ['@olveneer.component_store', '@twig', '@olveneer.config_store']
         lazy: true
 
-    Olveneer\TwigComponentsBundle\Twig\TwigComponentExtension: '@olveneer.component_extension'
-    Olveneer\TwigComponentsBundle\Service\ComponentStore: '@olveneer.component_store'
-    Olveneer\TwigComponentsBundle\Service\ComponentRenderer: '@olveneer.component_renderer'
-    Olveneer\TwigComponentsBundle\Twig\SlotExtension:         '@olveneer.slot_extension'
-    Olveneer\TwigComponentsBundle\Service\ConfigStore:        '@olveneer.config_store'
+    Olveneer\TwigComponentsBundle\Service\ComponentStore:       '@olveneer.component_store'
+    Olveneer\TwigComponentsBundle\Service\ComponentRenderer:    '@olveneer.component_renderer'
+    Olveneer\TwigComponentsBundle\Twig\SlotExtension:           '@olveneer.slot_extension'
+    Olveneer\TwigComponentsBundle\Service\ConfigStore:          '@olveneer.config_store'

@@ -28,7 +28,7 @@ class SlotsResolver
     {
         foreach ($this->requiredSlots as $slotName) {
             if (!isset($slots[$slotName])) {
-                throw new MissingSlotException("the slot $slotName is required but is never inserted");
+                throw new MissingSlotException("the slot $slotName is required but is never slotted in");
             }
         }
 

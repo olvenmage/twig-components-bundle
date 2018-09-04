@@ -2,20 +2,16 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
-use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
-use Olveneer\TwigComponentsBundle\Twig\SlotExtension;
-
 /**
- * Class SlotTokenParser
+ * Class SlotParser
  * @package Olveneer\TwigComponentsBundle\Slot
  */
-class CollectParser extends \Twig_TokenParser
+class SlotParser extends \Twig_TokenParser
 {
     /**
      * @var string
      */
-    private $endTag = 'endcollect';
-
+    private $endTag = 'endslot';
 
     /**
      * @param \Twig_Token $token
@@ -35,7 +31,7 @@ class CollectParser extends \Twig_TokenParser
         while ($continue)
         {
             // create subtree until the decideSlotEnd() callback returns true
-            $body = $this->parser->subparse([$this, 'decideCollectEnd']);
+            $body = $this->parser->subparse([$this, 'decideSlotEnd']);
 
             $tag = $stream->next()->getValue();
 
@@ -57,7 +53,7 @@ class CollectParser extends \Twig_TokenParser
             $stream->expect(\Twig_Token::BLOCK_END_TYPE);
         }
 
-        return new CollectNode(new \Twig_Node($params), $lineno, $this->getTag());
+        return new SlotNode(new \Twig_Node($params), $lineno, $this->getTag());
     }
 
     /**
@@ -86,7 +82,7 @@ class CollectParser extends \Twig_TokenParser
      * @param \Twig_Token $token
      * @return bool
      */
-    public function decideCollectEnd(\Twig_Token $token)
+    public function decideSlotEnd(\Twig_Token $token)
     {
         return $token->test([$this->endTag]);
     }
@@ -99,6 +95,6 @@ class CollectParser extends \Twig_TokenParser
      */
     public function getTag()
     {
-        return 'collect';
+        return 'slot';
     }
 }

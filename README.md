@@ -93,10 +93,10 @@ Let's look at method A first.
 
 Inside any template, you can use the following syntax:
 
-`{% get 'name' %} {% endget %}` <br>
+`{% get name %} {% endget %}` <br>
 This renders the component without passing props, to do that, use this:
 
-`{% get 'name' with { someProp: 'someValue' } %} {% endget %}` <br>
+`{% get name with { someProp: 'someValue' } %} {% endget %}` <br>
 
 Method B is, injecting the `Component` into your service or controller and either call the 
 `renderComponent( $props = [])` function if you just want to get the html, or the 
@@ -129,74 +129,74 @@ Let's say you have a component named 'card' using the template `card.html.twig` 
     
     <div class="card"> 
         <div class="card-header">
-            {% collect 'header' %}
+            {% slot header %}
                  <h1> default header value </h1>
-             {% endcollect %}
+             {% endslot %}
         </div>
         <div class="card-body">
-            {% collect 'body' %}
+            {% slot body %}
                  <h1> default body value </h1>
-             {% endcollect %}
+             {% endslot %}
         </div>
     </div>
     
 If you're familiar with Vue or React you're probably realising what's going on. This component is asking
-for certain blocks of markup. The value you see inbetween the collect blocks is a default value if nothing
-is `supplied`.
+for certain blocks of markup. The value you see inbetween the slot blocks is a default value if nothing
+is `slotted` in.
 
 Now we want to use this card component in one of our templates:
 
     // index.html.twig
     
     <body>
-        {% get 'card' %}
-            {% insert 'header' %}
+        {% get card %}
+            {% slot header %}
                 <div> My own html! </div>
-            {% endinsert %}
+            {% endslot %}
         {% endget %}
     </body>
     
 So this will result in the rendering of the mainComponent where the header slot will be filled in
 with `<div> My own html! </div>` and the body defaulting to `<h1> default body value </h1>`.
 
-We can of course also insert our body if we want to like this:
+We can of course also slot our body in if we want to like this:
 
     // index.html.twig
     
     <body>
-        {% get 'card' %}
-            {% insert 'header' %}
+        {% get card %}
+            {% slot header %}
                 <div> My own html! </div>
-            {% endinsert %}
+            {% endslot %}
             
-            {% insert 'body' %}
+            {% slot body %}
                 <div> A cool body </div>
-            {% endinsert %}
+            {% endslot %}
         {% endget %}
     </body>
     
-Not only can you pass your values from the insert to the collect, you can also `expose` certain variables. Here is an example:
+Not only can you pass your values from the {% get %} to the component, the {% slot %} can also `expose` certain variables. Here is an example:
 
     // parent.html.twig
     {% for item in items %}
         ...
     {% endfor %}
     
-    {% collect 'body' expose { products: items, hello: 'Hi!!!' } %} {% endcollect %}
+    {% slot body expose { products: items, hello: 'Hi!!!' } %} {% endslot %}
     
     //child.html.twig
-    {% get 'parent' %}
-        {% insert 'body' %}
+    {% get parent %}
+        {% slot body %}
             <div> ... </div>
             <h1> {{ hello }} </h1>
             
             {% for product in products %}
                 ...
             {% endfor %}
-        {% endinsert  %}
+        {% endslot  %}
     {% endget %}
     
-As you can see, the variables you expose on the collect can be used in the {% insert %} tags. Note,
+As you can see, the variables you expose can be used in the {% slot %} tags! Note,
 the variables you expose `only` exist inbetween those tags!
 
 **Mixins**

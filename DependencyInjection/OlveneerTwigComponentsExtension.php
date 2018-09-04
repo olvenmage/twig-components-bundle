@@ -40,7 +40,5 @@ class OlveneerTwigComponentsExtension extends Extension
 
         $container->registerForAutoconfiguration(TwigComponentInterface::class)
             ->addTag('olveneer.component');
-
-
     }
 }
