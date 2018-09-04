@@ -123,6 +123,10 @@ example:
 
 TwigComponents also have the build-in functionality to pass html instead of just variables.
 
+There are two types of {% slot %} tags. First, the ones that live inside {% get %} tags. The html between these tags
+gets inserted into the component that's being rendered. Second, the {% slot %} tag that `doesn't` live in a {% get %} tag.
+These tags define a place where HTML/Twig content can be slotted in, with the value in between being the default value.
+
 Let's say you have a component named 'card' using the template `card.html.twig` file which renders a bootstrap card.
 
     // card.html.twig
