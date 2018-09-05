@@ -135,4 +135,13 @@ interface TwigComponentInterface
      * @return array
      */
     public function importMixins();
+
+
+    /**
+     * Whether or not the props should automatically be injected into the parameters.
+     * The injecting of a prop only happens if it doesn't already exist in the parameters.
+     *
+     * @return bool
+     */
+    public function appendsProps();
 }

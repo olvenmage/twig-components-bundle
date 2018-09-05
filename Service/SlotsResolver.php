@@ -2,13 +2,15 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
+use Olveneer\TwigComponentsBundle\Exception\ElementMismatchException;
+use Olveneer\TwigComponentsBundle\Exception\MissingSlotException;
+
 /**
  * Class SlotsResolver
  * @package Olveneer\TwigComponentsBundle\Service
  */
 class SlotsResolver
 {
-
     /**
      * @var array
      */

@@ -10,7 +10,6 @@ namespace Olveneer\TwigComponentsBundle\Service;
  */
 class ConfigStore
 {
-
     /**
      * @var string
      */

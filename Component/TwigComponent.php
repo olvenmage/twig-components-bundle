@@ -2,11 +2,13 @@
 
 namespace Olveneer\TwigComponentsBundle\Component;
 
+use Olveneer\TwigComponentsBundle\Exception\ComponentNotFoundException;
+use Olveneer\TwigComponentsBundle\Exception\MixinNotFoundException;
+use Olveneer\TwigComponentsBundle\Exception\TemplateNotFoundException;
 use Olveneer\TwigComponentsBundle\Service\SlotsResolver;
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Olveneer\TwigComponentsBundle\Service\TestS;
 
 /**
  * Class TwigComponent
@@ -176,7 +178,9 @@ class TwigComponent implements TwigComponentInterface
      *
      * @param array $props
      * @return String
-     * @throws \Olveneer\TwigComponentsBundle\Service\TemplateNotFoundException
+     * @throws ComponentNotFoundException
+     * @throws MixinNotFoundException
+     * @throws TemplateNotFoundException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
@@ -191,7 +195,9 @@ class TwigComponent implements TwigComponentInterface
      *
      * @param array $props
      * @return Response
-     * @throws \Olveneer\TwigComponentsBundle\Service\TemplateNotFoundException
+     * @throws ComponentNotFoundException
+     * @throws MixinNotFoundException
+     * @throws TemplateNotFoundException
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
@@ -209,5 +215,16 @@ class TwigComponent implements TwigComponentInterface
     public function importMixins()
     {
         return [];
+    }
+
+    /**
+     * Whether or not the props should automatically be injected into the parameters.
+     * The injecting of a prop only happens if it doesn't already exist in the parameters.
+     *
+     * @return bool
+     */
+    public function appendsProps()
+    {
+        return true;
     }
 }

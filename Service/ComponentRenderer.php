@@ -2,9 +2,14 @@
 
 namespace Olveneer\TwigComponentsBundle\Service;
 
+use Olveneer\TwigComponentsBundle\Exception\ComponentNotFoundException;
 use Olveneer\TwigComponentsBundle\Component\TwigComponent;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentInterface;
 use Olveneer\TwigComponentsBundle\Component\TwigComponentMixin;
+use Olveneer\TwigComponentsBundle\Exception\ElementMismatchException;
+use Olveneer\TwigComponentsBundle\Exception\MissingSlotException;
+use Olveneer\TwigComponentsBundle\Exception\MixinNotFoundException;
+use Olveneer\TwigComponentsBundle\Exception\TemplateNotFoundException;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -14,7 +19,6 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class ComponentRenderer
 {
-
     /**
      * @var ComponentStore
      */
@@ -29,11 +33,6 @@ class ComponentRenderer
      * @var string
      */
     public $componentDirectory;
-
-    /**
-     * @var array
-     */
-    private $mixinStore;
 
     /**
      * @var array
@@ -53,7 +52,6 @@ class ComponentRenderer
         $this->componentDirectory = $configStore->componentDirectory;
 
         $this->target = ['slots' => [], 'context' => []];
-        $this->mixinStore = [];
     }
 
     /**
@@ -66,6 +64,7 @@ class ComponentRenderer
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      * @throws TemplateNotFoundException
+     * @throws ComponentNotFoundException
      */
     public function renderComponent($name, $props = [])
     {
@@ -80,34 +79,8 @@ class ComponentRenderer
             $name = $component->getName();
         }
 
-        /** @var string $imports */
-        $importReferences = $component->importMixins();
-
-        /** @var TwigComponentMixin $imports */
-        $imports = [];
-
-        foreach ($importReferences as &$import) {
-            if (!isset($this->mixinStore[$import])) {
-                throw new \Exception("The mixin '$import' is not registered as a mixin.");
-            }
-
-            $imports[] = $this->mixinStore[$import];
-        }
-
-        uasort($imports, function ($a, $b) {
-            if (!$a instanceof TwigComponentMixin || !$b instanceof TwigComponentMixin) {
-                throw new \Exception();
-            }
-
-            $a = $a->getPriority();
-            $b = $b->getPriority();
-
-            if ($a == $b) {
-                return 0;
-            }
-
-            return ($a > $b) ? -1 : 1;
-        });
+        /** @var TwigComponentMixin[] $imports */
+        $imports = $this->store->getImports($name);
 
         foreach ($imports as $import) {
             foreach ($import->getProps() as $key => $prop) {
@@ -137,6 +110,14 @@ class ComponentRenderer
             }
         }
 
+        if ($component->appendsProps()) {
+            foreach ($props as $prop => $value) {
+                if (!isset($parameters[$prop])) {
+                    $parameters[$prop] = $value;
+                }
+            }
+        }
+
         return $this->environment->render($componentPath, $parameters);
     }
 
@@ -150,6 +131,7 @@ class ComponentRenderer
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
      * @throws TemplateNotFoundException
+     * @throws ComponentNotFoundException
      */
     public function render($name, $props = [])
     {
@@ -166,16 +148,18 @@ class ComponentRenderer
 
     /**
      * @param $name
+     * @throws ComponentNotFoundException
      */
     public function throwException($name)
     {
-        throw new \ComponentNotFoundException("No component for the name '$name' found!'");
+        throw new ComponentNotFoundException("No component for the name '$name' found!'");
     }
 
     /**
      * @param $name
      * @param array $props
      * @return null|TwigComponentInterface
+     * @throws ComponentNotFoundException
      */
     public function getComponent($name, array &$props = [])
     {
@@ -202,6 +186,7 @@ class ComponentRenderer
      * Initializes the component and adds it to the store
      *
      * @param TwigComponent $component
+     * @throws MixinNotFoundException
      */
     public function register(TwigComponent $component)
     {
@@ -212,16 +197,10 @@ class ComponentRenderer
     }
 
     /**
-     * @param $mixin
-     */
-    public function registerMixin($mixin)
-    {
-        $this->mixinStore[get_class($mixin)] = $mixin;
-    }
-
-    /**
      * @param $componentName
      * @param $slots
+     * @param $context
+     * @throws ComponentNotFoundException
      * @throws ElementMismatchException
      * @throws MissingSlotException
      */
@@ -280,6 +259,9 @@ class ComponentRenderer
         return $this->environment;
     }
 
+    /**
+     * @return array
+     */
     public function getContext()
     {
         return $this->target['context'];

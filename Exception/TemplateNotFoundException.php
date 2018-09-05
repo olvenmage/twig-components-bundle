@@ -1,6 +1,6 @@
 <?php
 
-namespace Olveneer\TwigComponentsBundle\Service;
+namespace Olveneer\TwigComponentsBundle\Exception;
 
 /**
  * Class TemplateNotFoundException

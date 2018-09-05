@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
+use Olveneer\TwigComponentsBundle\Exception\SlotSyntaxException;
+
 /**
  * Class SlotNode
  * @package Olveneer\TwigComponentsBundle\Twig\tag\component
@@ -21,7 +23,7 @@ class SlotNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
     /**
      * @param \Twig_Compiler $compiler
-     * @throws \Exception
+     * @throws SlotSyntaxException
      */
     public function compile(\Twig_Compiler $compiler)
     {
@@ -44,7 +46,7 @@ class SlotNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $nodes = $params->nodes;
 
         if (!$nodes[1] instanceof \Twig_Node_Expression_Name) {
-            throw new \Exception("Use unquoted strings for the {% slot %} tag.");
+            throw new SlotSyntaxException("Use unquoted strings for the {% slot %} tag.");
         }
 
         $name = $nodes[1]->getAttribute('name');
@@ -59,10 +61,10 @@ class SlotNode extends \Twig_Node implements \Twig_NodeOutputInterface
                         ->write('$exposed = ')
                         ->subcompile($nodes[3])->raw(';')->raw(PHP_EOL);
                 } else {
-                    throw new \SyntaxError("Expose expects an object{} of values to expose.");
+                    throw new SlotSyntaxException("Expose expects an object{} of values to expose.");
                 }
             } else {
-                throw new \SyntaxError("The {% slot %} tag expects 'expose', '$exposes' was given instead");
+                throw new SlotSyntaxException("The {% slot %} tag expects 'expose', '$exposes' was given instead");
             }
         }
 

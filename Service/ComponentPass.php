@@ -13,7 +13,6 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class ComponentPass implements CompilerPassInterface
 {
-    
     /**
      * Registers all services with the 'olveneer.component' tag as valid components.
      *
@@ -26,9 +25,7 @@ class ComponentPass implements CompilerPassInterface
         }
 
         $renderer = $container->findDefinition(ComponentRenderer::class);
-
-
-
+        $store = $container->findDefinition(ComponentStore::class);
 
         $taggedServices = $container->findTaggedServiceIds('olveneer.component');
 
@@ -39,7 +36,7 @@ class ComponentPass implements CompilerPassInterface
         $taggedServices = $container->findTaggedServiceIds('olveneer.mixin');
 
         foreach ($taggedServices as $id => $tags) {
-            $renderer->addMethodCall('registerMixin', [new Reference($id)]);
+            $store->addMethodCall('registerMixin', [new Reference($id)]);
         }
     }
 }

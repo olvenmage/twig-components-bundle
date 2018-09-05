@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Twig\tag;
 
+use Olveneer\TwigComponentsBundle\Exception\GetSyntaxException;
+
 /**
  * Class SlotNode
  * @package Olveneer\TwigComponentsBundle\Slot
@@ -21,9 +23,10 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
      * @param $slotted
      * @param null $tag
      */
-    public function __construct(\Twig_Node_Expression $expr, \Twig_Node_Expression $variables = null, $lineno, $slotted, $tag = null)
+    public function __construct(\Twig_Node_Expression $expr, ?\Twig_Node_Expression $variables, $lineno, $slotted = [], $tag = null)
     {
         $nodes = array('expr' => $expr);
+
         if (null !== $variables) {
             $nodes['variables'] = $variables;
         }
@@ -35,6 +38,7 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
 
     /**
      * @param \Twig_Compiler $compiler
+     * @throws GetSyntaxException
      */
     public function compile(\Twig_Compiler $compiler)
     {
@@ -43,7 +47,7 @@ class ComponentNode extends \Twig_Node implements \Twig_NodeOutputInterface
         $exprNode = $this->getNode('expr');
 
         if (!$exprNode instanceof \Twig_Node_Expression_Name) {
-            throw new \Exception("Use unquoted strings for the {% get %} tag.");
+            throw new GetSyntaxException("Use unquoted strings for the {% get %} tag.");
         }
 
         $componentName = $exprNode->getAttribute('name');
