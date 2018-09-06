@@ -285,6 +285,41 @@ Now we finally get to the config, I will show you an example configuration file.
     olveneer_twig_components:
         components_directory: '/components'
             
+            
+**What about just Embed?**
+Some of you might think, "Why not use twig's embed?".
+
+Well, there are some noticable differences:
+
+An embed uses block tags isntead of our cool slot tags, the difference there is, a block can only be overriden once, which is logical since a block is quite static. However, a slot tag can expose variables for the overriding tag to use, so they can be very dynamic. For that reason, this works:
+
+     // parent.html.twig
+     <table>
+          <tr>
+               <th></th>
+               <th></th>
+          </tr>
+          <tr>
+               {% for item in items %}
+                    {% slot body expose {item: item} %}
+                    {% endslot %}
+               {% endfor %}
+          </tr>
+     </table>
+
+     // child.html.twig
+
+     {% get parent %}
+          {% slot body %}
+               <td> {{ item.name }} </td>
+               <td> {{ item.text }} </td>
+          {% endslot %}
+     {% endget %}
+     
+Note: This example is inspired from vuetify. Where they use this a lot in their components.
+     
+Also, component's can be very independent. When using embed you have to pass the parameters they require in the with {}. Which could lead to you having to inject and pass them along into every template where you wish to embed the template. With components, they can handle this themselves and just ask for `props` to use.
+
 # Upcoming
 * Open for suggestions!
 
