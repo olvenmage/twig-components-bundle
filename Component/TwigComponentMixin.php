@@ -2,6 +2,8 @@
 
 namespace Olveneer\TwigComponentsBundle\Component;
 
+use Symfony\Component\OptionsResolver\OptionsResolver;
+
 /***
  * Class TwigComponentMixin
  * @package Olveneer\TwigComponentsBundle\Component
@@ -16,7 +18,7 @@ class TwigComponentMixin
      *
      * Merges with the parameters.
      */
-    public function getParameters()
+    public function getParameters(array $props = [])
     {
         return [];
     }
@@ -40,5 +42,16 @@ class TwigComponentMixin
     public function getPriority()
     {
         return 0;
+    }
+
+    /**
+     * Configures the props using the Symfony OptionResolver
+     *
+     * @param OptionsResolver $resolver
+     * @return void|bool
+     */
+    public function configureProps(OptionsResolver $resolver)
+    {
+        return false;
     }
 }

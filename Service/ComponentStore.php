@@ -96,7 +96,6 @@ class ComponentStore
      */
     public function get($name)
     {
-        dump($this->components);
         if (class_exists($name)) {
             foreach($this->components as $component) {
                 if (get_class($component) === $name) {

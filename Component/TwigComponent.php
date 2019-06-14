@@ -80,7 +80,7 @@ class TwigComponent implements TwigComponentInterface
      */
     public function getTemplatePath()
     {
-       return $this->getTemplateDirectory() . '/' . $this->getTemplateName();
+        return $this->getTemplateDirectory() . '/' . $this->getTemplateName();
     }
 
     /**
@@ -159,7 +159,7 @@ class TwigComponent implements TwigComponentInterface
 
     public function configureSlots(SlotsResolver $resolver)
     {
-        
+
     }
 
     /**

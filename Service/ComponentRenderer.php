@@ -59,12 +59,12 @@ class ComponentRenderer
      *
      * @param $name
      * @param array $props
-     * @return String
-     * @throws \Twig_Error_Loader
-     * @throws \Twig_Error_Runtime
-     * @throws \Twig_Error_Syntax
-     * @throws TemplateNotFoundException
+     * @return string
      * @throws ComponentNotFoundException
+     * @throws TemplateNotFoundException
+     * @throws \Twig\Error\LoaderError
+     * @throws \Twig\Error\RuntimeError
+     * @throws \Twig\Error\SyntaxError
      */
     public function renderComponent($name, $props = [])
     {
@@ -82,13 +82,14 @@ class ComponentRenderer
         /** @var TwigComponentMixin[] $imports */
         $imports = $this->store->getImports($name);
 
+        $parameters = $component->getParameters($props);
+
         foreach ($imports as $import) {
-            foreach ($import->getProps() as $key => $prop) {
-                $props[$key] = $prop;
+            foreach ($import->getParameters($props) as $key => $parameter) {
+                $parameters[$key] = $parameter;
             }
         }
 
-        $parameters = $component->getParameters($props);
         $componentPath = $component->getTemplatePath();
 
         if (!$this->environment->getLoader()->exists($componentPath)) {
@@ -102,12 +103,6 @@ class ComponentRenderer
 
             $errorMsg = "There is no component template found for the '$className' component with the name '$name'.\n Looked for '$prefix$componentPath' but found nothing.";
             throw new TemplateNotFoundException($errorMsg);
-        }
-
-        foreach ($imports as $import) {
-            foreach ($import->getParameters() as $key => $parameter) {
-                $parameters[$key] = $parameter;
-            }
         }
 
         if ($component->appendsProps()) {
@@ -169,7 +164,18 @@ class ComponentRenderer
             $this->throwException($name);
         }
 
+        /** @var TwigComponentMixin[] $imports */
+        $imports = $this->store->getImports($name);
+
         $optionResolver = new OptionsResolver();
+
+        foreach ($imports as $import) {
+            foreach ($import->getProps() as $key => $prop) {
+                $props[$key] = $prop;
+            }
+
+            $import->configureProps($optionResolver);
+        }
 
         $isUsed = $component->configureProps($optionResolver) !== false;
 
