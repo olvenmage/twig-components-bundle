@@ -2,11 +2,11 @@
 
 namespace Olveneer\TwigComponentsBundle\Component;
 
-use Olveneer\TwigComponentsBundle\Service\SlotsResolver;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Olveneer\TwigComponentsBundle\Service\ComponentRenderer;
+use Olveneer\TwigComponentsBundle\Service\SlotsResolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 /**
  * Interface TwigComponentInterface
@@ -144,4 +144,12 @@ interface TwigComponentInterface
      * @return bool
      */
     public function appendsProps();
+
+    /**
+     * Returns the Twig Template in string form instead of a file.
+     * Returns false if a file is used.
+     *
+     * @return string|bool
+     */
+    public function getContent();
 }

@@ -227,4 +227,15 @@ class TwigComponent implements TwigComponentInterface
     {
         return true;
     }
+
+    /**
+     * Returns the Twig Template in string form instead of a file.
+     * Returns false if a file is used.
+     *
+     * @return string|bool
+     */
+    public function getContent()
+    {
+        return false;
+    }
 }

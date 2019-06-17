@@ -59,12 +59,13 @@ class ComponentRenderer
      *
      * @param $name
      * @param array $props
-     * @return string
+     * @return false|string
      * @throws ComponentNotFoundException
      * @throws TemplateNotFoundException
-     * @throws \Twig\Error\LoaderError
-     * @throws \Twig\Error\RuntimeError
-     * @throws \Twig\Error\SyntaxError
+     * @throws \Throwable
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
      */
     public function renderComponent($name, $props = [])
     {
@@ -92,6 +93,19 @@ class ComponentRenderer
 
         $componentPath = $component->getTemplatePath();
 
+        if ($component->appendsProps()) {
+            foreach ($props as $prop => $value) {
+                if (!isset($parameters[$prop])) {
+                    $parameters[$prop] = $value;
+                }
+            }
+        }
+
+        if ($content = $component->getContent() !== false) {
+            $template = $this->environment->createTemplate($content);
+            return $template->render($parameters);
+        }
+
         if (!$this->environment->getLoader()->exists($componentPath)) {
             if (substr($componentPath, 0, 1) === '/') {
                 $prefix = 'templates';
@@ -105,28 +119,21 @@ class ComponentRenderer
             throw new TemplateNotFoundException($errorMsg);
         }
 
-        if ($component->appendsProps()) {
-            foreach ($props as $prop => $value) {
-                if (!isset($parameters[$prop])) {
-                    $parameters[$prop] = $value;
-                }
-            }
-        }
-
         return $this->environment->render($componentPath, $parameters);
     }
 
     /**
      * Returns a response holding the html of a component.
-     *
+     * 
      * @param $name
      * @param array $props
      * @return Response
+     * @throws ComponentNotFoundException
+     * @throws TemplateNotFoundException
+     * @throws \Throwable
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
      * @throws \Twig_Error_Syntax
-     * @throws TemplateNotFoundException
-     * @throws ComponentNotFoundException
      */
     public function render($name, $props = [])
     {
