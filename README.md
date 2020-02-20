@@ -47,9 +47,9 @@ The `configureProps` method can be used to make sure your component always funct
 This shouldn't be anything new if you've been using symfony for a while.
 
 Let's determine the name of our component: 
-Let's say the `get_class()` on your component results in `App/Component/TestComponent`, how the component's name is determined:
-take the last part of the class name, so in this case, TestComponent. Next, we make it smake cased, so it will be
-'test_component'. If you want a custom name, use: <br>
+Let's say the `get_class()` on your component results in `App/Component/TestComponent`. We then take the class name without the namespace so in this case `TestComponent` next, we make it snake cased so the final name results in `test_component` 
+
+If you want a custom name, use: <br>
 
     /**
      * Returns the string to use as a name for the component.
