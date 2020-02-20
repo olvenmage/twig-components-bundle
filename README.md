@@ -2,7 +2,8 @@
 A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.
 
 # About
-I am a long-time vue developer, but recently I've kinda jumped onto back-end programming instead as my favourite. Problem is, I was using twig and I really missed the component structure vue offered, sure you had blocks and all, but those were still lacking and didn't provide as much individuality, more so templates to extend.
+When developping front-end, I found myself quickly using frameworks like Vue and React. Recently I've focussed more on back-end programming in Symfony and quickly found myself missing the component structure Vue offered. Sure you had blocks and all, buit those were still lacking certain core functionalities that Vue did offer in it's own way. 
+
 
 So I made this bundle to get that functionality back and I think it works out perfectly. And suggestions or feedback is always welcome!
 olvenmage@live.nl
