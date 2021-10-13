@@ -1,3 +1,5 @@
+[![Total Downloads](https://img.shields.io/packagist/dt/olvenmage/twig-components-bundle.svg?style=flat-square)](https://packagist.org/packages/jonmldr/grumphp-doctrine-task)
+
 # twig-components-bundle
 A lightweight symfony bundle that provides easy ways to implement a modular, component structure into your twig templating.
 
